@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { CompassReticle } from "@/components/hud/CompassReticle";
+import { HudNav } from "@/components/hud/HudNav";
 import { LoraPanel } from "@/components/hud/LoraPanel";
 import { QuestJournal } from "@/components/hud/QuestJournal";
 import { SosButton } from "@/components/hud/SosButton";
@@ -121,6 +122,10 @@ function Index() {
         </div>
         <SosButton onArmed={() => setSos(true)} />
       </header>
+
+      <div className="relative z-40">
+        <HudNav />
+      </div>
 
       <section className="mt-3 grid grid-cols-2 gap-2">
         <div className="hud-panel p-3">
