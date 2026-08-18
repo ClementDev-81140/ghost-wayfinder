@@ -4,11 +4,12 @@ const LINKS = [
   { to: "/", label: "HUD" },
   { to: "/quetes", label: "QUETES" },
   { to: "/codex", label: "CODEX" },
+  { to: "/photo", label: "PHOTO" },
 ] as const;
 
 export function HudNav() {
   return (
-    <nav className="grid grid-cols-3 gap-2 py-2">
+    <nav className="grid grid-cols-4 gap-2 py-2">
       {LINKS.map((l) => (
         <Link
           key={l.to}

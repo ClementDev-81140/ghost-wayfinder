@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CodexRouteImport } from './routes/codex'
+import { Route as PhotoRouteImport } from './routes/photo'
 import { Route as QuetesRouteImport } from './routes/quetes'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const CodexRoute = CodexRouteImport.update({
   path: '/codex',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PhotoRoute = PhotoRouteImport.update({
+  id: '/photo',
+  path: '/photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuetesRoute = QuetesRouteImport.update({
   id: '/quetes',
   path: '/quetes',
@@ -32,30 +38,34 @@ const QuetesRoute = QuetesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/codex' | '/quetes'
+  fullPaths: '/' | '/codex' | '/photo' | '/quetes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/codex' | '/quetes'
-  id: '__root__' | '/' | '/codex' | '/quetes'
+  to: '/' | '/codex' | '/photo' | '/quetes'
+  id: '__root__' | '/' | '/codex' | '/photo' | '/quetes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CodexRoute: typeof CodexRoute
+  PhotoRoute: typeof PhotoRoute
   QuetesRoute: typeof QuetesRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CodexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/photo': {
+      id: '/photo'
+      path: '/photo'
+      fullPath: '/photo'
+      preLoaderRoute: typeof PhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quetes': {
       id: '/quetes'
       path: '/quetes'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CodexRoute: CodexRoute,
+  PhotoRoute: PhotoRoute,
   QuetesRoute: QuetesRoute,
 }
 export const routeTree = rootRouteImport
