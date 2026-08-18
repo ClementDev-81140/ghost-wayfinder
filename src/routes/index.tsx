@@ -1,24 +1,188 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { CompassReticle } from "@/components/hud/CompassReticle";
+import { LoraPanel } from "@/components/hud/LoraPanel";
+import { QuestJournal } from "@/components/hud/QuestJournal";
+import { SosButton } from "@/components/hud/SosButton";
+import { SosOverlay } from "@/components/hud/SosOverlay";
+import { TacticalMap } from "@/components/hud/TacticalMap";
+import {
+  PHASES,
+  QG,
+  distanceFromCenter,
+  formatClock,
+  formatCoord,
+  phaseForHour,
+  secondsUntilNextPhase,
+  type PhaseId,
+} from "@/lib/tempete";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Operation Gresigne - HUD Tactique Offline" },
+      {
+        name: "description",
+        content:
+          "Interface tactique offline-first pour le jeu de la Gresigne : carte vectorielle, Tempete en 4 phases, liaison LoRa 868 MHz et bouton SOS.",
+      },
+      { property: "og:title", content: "Operation Gresigne - HUD Tactique Offline" },
+      {
+        property: "og:description",
+        content:
+          "HUD gaming militaire : reticule de boussole, contraction de zone, uplinks LoRa 8 octets et protocole SOS.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [phase, setPhase] = useState<PhaseId>(0);
+  const [countdown, setCountdown] = useState(0);
+  const [gpsIn, setGpsIn] = useState(30);
+  const [uplinkIn, setUplinkIn] = useState(300);
+  const [heading, setHeading] = useState(42);
+  const [player, setPlayer] = useState({ x: 0.52, y: 0.47 });
+  const [pos, setPos] = useState({ lat: QG.lat, lon: QG.lon });
+  const [score, setScore] = useState(120);
+  const [outSeconds, setOutSeconds] = useState(0);
+  const [sos, setSos] = useState(false);
+  const penaltyRef = useRef(false);
+
+  const outOfZone = distanceFromCenter(player) > PHASES[phase].radius;
+
+  useEffect(() => {
+    const now = new Date();
+    setPhase(phaseForHour(now.getUTCHours()));
+    setCountdown(secondsUntilNextPhase(now));
+  }, []);
+
+  useEffect(() => {
+    if (sos) return;
+    const id = window.setInterval(() => {
+      const now = new Date();
+      setPhase(phaseForHour(now.getUTCHours()));
+      setCountdown(secondsUntilNextPhase(now));
+      setGpsIn((v) => (v <= 1 ? 30 : v - 1));
+      setUplinkIn((v) => (v <= 1 ? 300 : v - 1));
+      setHeading((h) => (h + (Math.random() * 4 - 2) + 360) % 360);
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [sos]);
+
+  // Echantillonnage GPS intermittent : la position ne bouge qu'au cycle 30s
+  useEffect(() => {
+    if (gpsIn !== 30 || sos) return;
+    setPos({
+      lat: QG.lat + (player.y - 0.5) * -0.06,
+      lon: QG.lon + (player.x - 0.5) * 0.08,
+    });
+  }, [gpsIn, player, sos]);
+
+  // Penalite hors-zone : -5 pts apres 5 minutes consecutives
+  useEffect(() => {
+    if (!outOfZone || sos) {
+      setOutSeconds(0);
+      penaltyRef.current = false;
+      return;
+    }
+    const id = window.setInterval(() => {
+      setOutSeconds((s) => {
+        const next = s + 1;
+        if (next >= 300 && !penaltyRef.current) {
+          penaltyRef.current = true;
+          setScore((p) => p - 5);
+        }
+        return next;
+      });
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [outOfZone, sos]);
+
+  if (sos) {
+    return <SosOverlay lat={pos.lat} lon={pos.lon} onCancel={() => setSos(false)} />;
+  }
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="relative mx-auto min-h-screen w-full max-w-md px-3 pb-8">
+      {outOfZone && (
+        <div className="tac-flash pointer-events-none fixed inset-0 z-30" aria-hidden />
+      )}
+
+      <header className="relative z-40 flex items-start justify-between border-b border-border py-3">
+        <div>
+          <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION GRESIGNE</h1>
+          <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
+          <p className="hud-label">SCORE {score} PTS</p>
+        </div>
+        <SosButton onArmed={() => setSos(true)} />
+      </header>
+
+      <section className="mt-3 grid grid-cols-2 gap-2">
+        <div className="hud-panel p-3">
+          <p className="hud-label">TEMPETE / {PHASES[phase].label}</p>
+          <p className="mt-1 text-2xl tabular-nums text-alert">{formatClock(countdown)}</p>
+          <p className="hud-label mt-1">{PHASES[phase].window}</p>
+        </div>
+        <div className="hud-panel p-3">
+          <p className="hud-label">STATUT ZONE</p>
+          <p className={`mt-1 text-lg ${outOfZone ? "text-alert tac-pulse" : "text-foreground"}`}>
+            {outOfZone ? "HORS-ZONE" : "EN ZONE"}
+          </p>
+          <p className="hud-label mt-1">
+            {outOfZone ? `MALUS -5 PTS DANS ${formatClock(Math.max(0, 300 - outSeconds))}` : "AUCUN MALUS"}
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-2 hud-panel p-3 text-primary">
+        <CompassReticle heading={heading} lat={pos.lat} lon={pos.lon} outOfZone={outOfZone} />
+        <div className="mt-2 flex justify-between border-t border-border pt-2">
+          <span className="text-xs text-muted-foreground">{formatCoord(pos.lat, "lat")}</span>
+          <span className="text-xs text-muted-foreground">{formatCoord(pos.lon, "lon")}</span>
+        </div>
+      </section>
+
+      <section className="mt-2">
+        <TacticalMap phase={phase} player={player} outOfZone={outOfZone} />
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {(
+            [
+              ["CENTRE", { x: 0.5, y: 0.5 }],
+              ["PERIPHERIE", { x: 0.72, y: 0.66 }],
+              ["LISIERE", { x: 0.9, y: 0.15 }],
+            ] as const
+          ).map(([label, p]) => (
+            <button
+              key={label}
+              onClick={() => setPlayer({ ...p })}
+              className="border border-border py-2 text-[11px] tracking-[0.15em] text-muted-foreground"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <p className="hud-label mt-1">SIMULATION DEPLACEMENT EQUIPE</p>
+      </section>
+
+      <section className="mt-2 space-y-2">
+        <LoraPanel
+          uplinkIn={uplinkIn}
+          lastDownlink={`REDUCTION ZONE ${PHASES[phase].label}`}
+          rssi={-96}
+          battery={87}
+          gpsIn={gpsIn}
+        />
+        <QuestJournal phase={phase} />
+      </section>
+
+      <footer className="hud-label mt-4 text-center">
+        QG VAOUR / TOUCHES ACCUEIL &amp; RETOUR NEUTRALISEES
+      </footer>
+    </main>
   );
 }
