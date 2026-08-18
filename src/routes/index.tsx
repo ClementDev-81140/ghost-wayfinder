@@ -8,6 +8,7 @@ import { QuestJournal } from "@/components/hud/QuestJournal";
 import { SosButton } from "@/components/hud/SosButton";
 import { SosOverlay } from "@/components/hud/SosOverlay";
 import { TacticalMap } from "@/components/hud/TacticalMap";
+import { addPenalty, totalPoints, useScore } from "@/lib/score";
 import {
   PHASES,
   QG,
@@ -49,7 +50,8 @@ function Index() {
   const [heading, setHeading] = useState(42);
   const [player, setPlayer] = useState({ x: 0.52, y: 0.47 });
   const [pos, setPos] = useState({ lat: QG.lat, lon: QG.lon });
-  const [score, setScore] = useState(120);
+  const scoreState = useScore();
+  const score = totalPoints(scoreState);
   const [outSeconds, setOutSeconds] = useState(0);
   const [sos, setSos] = useState(false);
   const penaltyRef = useRef(false);
@@ -96,7 +98,7 @@ function Index() {
         const next = s + 1;
         if (next >= 300 && !penaltyRef.current) {
           penaltyRef.current = true;
-          setScore((p) => p - 5);
+          addPenalty(5);
         }
         return next;
       });
@@ -119,6 +121,7 @@ function Index() {
           <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION GRESIGNE</h1>
           <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
           <p className="hud-label">SCORE {score} PTS</p>
+          <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
         </div>
         <SosButton onArmed={() => setSos(true)} />
       </header>
