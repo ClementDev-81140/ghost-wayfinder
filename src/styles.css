@@ -42,6 +42,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-alert: var(--alert);
+  --color-alert-foreground: var(--alert-foreground);
+  --font-mono: var(--font-mono-tac);
+  --shadow-hud: var(--shadow-hud);
+  --shadow-alert: var(--shadow-alert);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -62,33 +67,42 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --radius: 0.25rem;
+  /* Noir Tactique #121212 */
+  --background: oklch(0.185 0 0);
+  --foreground: oklch(0.84 0.055 118);
+  --card: oklch(0.222 0.008 118);
+  --card-foreground: oklch(0.84 0.055 118);
+  --popover: oklch(0.205 0.006 118);
+  --popover-foreground: oklch(0.84 0.055 118);
+  /* Vert Militaire Kaki #4B5320 */
+  --primary: oklch(0.42 0.075 118);
+  --primary-foreground: oklch(0.93 0.03 118);
+  --secondary: oklch(0.28 0.03 118);
+  --secondary-foreground: oklch(0.84 0.055 118);
+  --muted: oklch(0.26 0.02 118);
+  --muted-foreground: oklch(0.62 0.05 118);
+  --accent: oklch(0.35 0.06 118);
+  --accent-foreground: oklch(0.92 0.03 118);
+  /* Orange de Secours Fluorescent #FF5F1F */
+  --destructive: oklch(0.702 0.211 41.5);
+  --destructive-foreground: oklch(0.16 0 0);
+  --alert: oklch(0.702 0.211 41.5);
+  --alert-foreground: oklch(0.16 0 0);
+  --grid-line: oklch(0.42 0.075 118 / 35%);
+  --border: oklch(0.42 0.075 118 / 55%);
+  --input: oklch(0.42 0.075 118 / 45%);
+  --ring: oklch(0.55 0.09 118);
+  --font-mono-tac: "Share Tech Mono", "JetBrains Mono", ui-monospace, monospace;
+  --shadow-hud: 0 0 24px oklch(0.42 0.075 118 / 25%);
+  --shadow-alert: 0 0 28px oklch(0.702 0.211 41.5 / 45%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar: oklch(0.2 0.006 118);
+  --sidebar-foreground: oklch(0.84 0.055 118);
   --sidebar-primary: oklch(0.208 0.042 265.755);
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
   --sidebar-accent: oklch(0.968 0.007 247.896);
@@ -140,5 +154,67 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-mono-tac);
+    letter-spacing: 0.02em;
+    text-transform: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
+}
+
+@keyframes tac-scan {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tac-flash {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: oklch(0.702 0.211 41.5 / 28%);
+  }
+}
+
+@keyframes tac-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@utility tac-scan {
+  animation: tac-scan 4s linear infinite;
+}
+
+@utility tac-flash {
+  animation: tac-flash 0.9s ease-in-out infinite;
+}
+
+@utility tac-pulse {
+  animation: tac-pulse 1.4s ease-in-out infinite;
+}
+
+@utility hud-panel {
+  border: 1px solid var(--border);
+  background-color: oklch(0.2 0.006 118 / 82%);
+  box-shadow: var(--shadow-hud);
+  backdrop-filter: blur(2px);
+}
+
+@utility hud-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
