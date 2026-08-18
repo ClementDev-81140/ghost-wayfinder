@@ -27,7 +27,7 @@ export const Route = createFileRoute("/quetes")({
 });
 
 function QuetesPage() {
-  const [open, setOpen] = useState<string | null>(QUETES[0].id);
+  const [open, setOpen] = useState<string | null>(QUETES[0]?.id ?? null);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-3 pb-10">
