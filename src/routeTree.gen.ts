@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CodexRouteImport } from './routes/codex'
+import { Route as LoreRouteImport } from './routes/lore'
 import { Route as PhotoRouteImport } from './routes/photo'
 import { Route as QuetesRouteImport } from './routes/quetes'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const CodexRoute = CodexRouteImport.update({
   id: '/codex',
   path: '/codex',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoreRoute = LoreRouteImport.update({
+  id: '/lore',
+  path: '/lore',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PhotoRoute = PhotoRouteImport.update({
@@ -38,12 +44,14 @@ const QuetesRoute = QuetesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/codex': typeof CodexRoute
+  '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/codex' | '/photo' | '/quetes'
+  fullPaths: '/' | '/codex' | '/lore' | '/photo' | '/quetes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/codex' | '/photo' | '/quetes'
-  id: '__root__' | '/' | '/codex' | '/photo' | '/quetes'
+  to: '/' | '/codex' | '/lore' | '/photo' | '/quetes'
+  id: '__root__' | '/' | '/codex' | '/lore' | '/photo' | '/quetes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CodexRoute: typeof CodexRoute
+  LoreRoute: typeof LoreRoute
   PhotoRoute: typeof PhotoRoute
   QuetesRoute: typeof QuetesRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/codex'
       fullPath: '/codex'
       preLoaderRoute: typeof CodexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lore': {
+      id: '/lore'
+      path: '/lore'
+      fullPath: '/lore'
+      preLoaderRoute: typeof LoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/photo': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CodexRoute: CodexRoute,
+  LoreRoute: LoreRoute,
   PhotoRoute: PhotoRoute,
   QuetesRoute: QuetesRoute,
 }
