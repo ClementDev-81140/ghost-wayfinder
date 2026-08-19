@@ -4,9 +4,19 @@ type Props = {
   phase: PhaseId;
   player: { x: number; y: number };
   outOfZone: boolean;
+  selected?: string | null;
+  onSelect?: (code: string) => void;
 };
 
-export function TacticalMap({ phase, player, outOfZone }: Props) {
+const KIND_COLOR: Record<string, string> = {
+  QUETE: "oklch(0.7 0.19 45)",
+  PNJ: "oklch(0.7 0.19 45)",
+  CACHE: "currentColor",
+  ARBRE: "currentColor",
+  FAUNE: "currentColor",
+};
+
+export function TacticalMap({ phase, player, outOfZone, selected, onSelect }: Props) {
   const radius = PHASES[phase].radius;
 
   return (
@@ -57,17 +67,60 @@ export function TacticalMap({ phase, player, outOfZone }: Props) {
           strokeDasharray="3 2"
         />
 
+        {selected &&
+          (() => {
+            const t = SECTORS.find((s) => s.code === selected);
+            if (!t) return null;
+            return (
+              <line
+                x1={player.x * 100}
+                y1={player.y * 100}
+                x2={t.x * 100}
+                y2={t.y * 100}
+                stroke="oklch(0.7 0.19 45)"
+                strokeWidth="0.6"
+                strokeDasharray="2 1.5"
+              />
+            );
+          })()}
+
         {SECTORS.map((s) => {
           const active = isSectorActive(s, phase);
+          const isSel = selected === s.code;
           return (
-            <g key={s.code} opacity={active ? 1 : 0.35}>
+            <g
+              key={s.code}
+              opacity={active ? 1 : 0.35}
+              onClick={() => active && onSelect?.(s.code)}
+              className={active ? "cursor-pointer" : "cursor-not-allowed"}
+            >
+              <rect
+                x={s.x * 100 - 4}
+                y={s.y * 100 - 4}
+                width="8"
+                height="8"
+                fill="transparent"
+              />
+              {isSel && (
+                <rect
+                  x={s.x * 100 - 3.6}
+                  y={s.y * 100 - 3.6}
+                  width="7.2"
+                  height="7.2"
+                  fill="none"
+                  stroke="oklch(0.7 0.19 45)"
+                  strokeWidth="0.5"
+                  className="tac-pulse"
+                />
+              )}
               <rect
                 x={s.x * 100 - 2}
                 y={s.y * 100 - 2}
                 width="4"
                 height="4"
-                fill="none"
-                stroke={active ? "currentColor" : "oklch(0.55 0.2 27)"}
+                fill={isSel ? "oklch(0.7 0.19 45)" : "none"}
+                fillOpacity={isSel ? 0.35 : 1}
+                stroke={active ? KIND_COLOR[s.kind] ?? "currentColor" : "oklch(0.55 0.2 27)"}
                 strokeWidth="0.6"
               />
               <text
@@ -103,7 +156,7 @@ export function TacticalMap({ phase, player, outOfZone }: Props) {
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-between p-2">
         <span className="hud-label">ZONE ACTIVE {Math.round(radius * 100)}%</span>
-        <span className="hud-label text-destructive">HORS-ZONE HACHUREE</span>
+        <span className="hud-label text-destructive">TOUCHER UN CARRE = CAP</span>
       </div>
     </div>
   );

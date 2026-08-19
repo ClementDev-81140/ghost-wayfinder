@@ -10,7 +10,11 @@ import { SosOverlay } from "@/components/hud/SosOverlay";
 import { TacticalMap } from "@/components/hud/TacticalMap";
 import { addPenalty, totalPoints, useScore } from "@/lib/score";
 import {
+  KIND_LABEL,
   PHASES,
+  SECTORS,
+  bearingTo,
+  distanceMeters,
   QG,
   distanceFromCenter,
   formatClock,
@@ -54,9 +58,18 @@ function Index() {
   const score = totalPoints(scoreState);
   const [outSeconds, setOutSeconds] = useState(0);
   const [sos, setSos] = useState(false);
+  const [waypoint, setWaypoint] = useState<string | null>("GR-01");
   const penaltyRef = useRef(false);
 
   const outOfZone = distanceFromCenter(player) > PHASES[phase].radius;
+  const target = SECTORS.find((s) => s.code === waypoint) ?? null;
+  const nav = target
+    ? {
+        label: `${target.code} ${target.enigma}`,
+        bearing: bearingTo(player, target),
+        distance: distanceMeters(player, target),
+      }
+    : null;
 
   useEffect(() => {
     const now = new Date();
@@ -148,7 +161,13 @@ function Index() {
       </section>
 
       <section className="mt-2 hud-panel p-3 text-primary">
-        <CompassReticle heading={heading} lat={pos.lat} lon={pos.lon} outOfZone={outOfZone} />
+        <CompassReticle
+          heading={heading}
+          lat={pos.lat}
+          lon={pos.lon}
+          outOfZone={outOfZone}
+          target={nav}
+        />
         <div className="mt-2 flex justify-between border-t border-border pt-2">
           <span className="text-xs text-muted-foreground">{formatCoord(pos.lat, "lat")}</span>
           <span className="text-xs text-muted-foreground">{formatCoord(pos.lon, "lon")}</span>
@@ -156,7 +175,41 @@ function Index() {
       </section>
 
       <section className="mt-2">
-        <TacticalMap phase={phase} player={player} outOfZone={outOfZone} />
+        <TacticalMap
+          phase={phase}
+          player={player}
+          outOfZone={outOfZone}
+          selected={waypoint}
+          onSelect={setWaypoint}
+        />
+
+        {target ? (
+          <div className="mt-2 hud-panel p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="hud-label">{KIND_LABEL[target.kind]}</p>
+                <p className="text-xs tracking-[0.14em] text-foreground">
+                  {target.code} / {target.enigma.toUpperCase()}
+                </p>
+              </div>
+              <span className="text-xs text-alert">+{target.points} PTS</span>
+            </div>
+            <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{target.brief}</p>
+            <div className="mt-2 flex justify-between border-t border-border pt-2">
+              <span className="hud-label">
+                CAP {String(Math.round(nav?.bearing ?? 0)).padStart(3, "0")}&#176;
+              </span>
+              <span className="hud-label">DISTANCE {nav?.distance} M</span>
+              <button onClick={() => setWaypoint(null)} className="hud-label text-alert">
+                ANNULER
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="hud-label mt-2">
+            SELECTIONNER UN CARRE SUR LA CARTE POUR OBTENIR LE CAP
+          </p>
+        )}
         <div className="mt-2 grid grid-cols-3 gap-2">
           {(
             [
