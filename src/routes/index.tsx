@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CompassReticle } from "@/components/hud/CompassReticle";
 import { HudNav } from "@/components/hud/HudNav";
 import { LoraPanel } from "@/components/hud/LoraPanel";
+import { MessageQg } from "@/components/hud/MessageQg";
 import { QuestJournal } from "@/components/hud/QuestJournal";
 import { SosButton } from "@/components/hud/SosButton";
 import { SosOverlay } from "@/components/hud/SosOverlay";
@@ -136,7 +137,10 @@ function Index() {
           <p className="hud-label">SCORE {score} PTS</p>
           <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
         </div>
-        <SosButton onArmed={() => setSos(true)} />
+        <div className="flex items-start gap-2">
+          <MessageQg lat={pos.lat} lon={pos.lon} />
+          <SosButton onArmed={() => setSos(true)} />
+        </div>
       </header>
 
       <div className="relative z-40">
