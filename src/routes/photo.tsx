@@ -9,7 +9,7 @@ import { QG, formatCoord } from "@/lib/tempete";
 export const Route = createFileRoute("/photo")({
   head: () => ({
     meta: [
-      { title: "Safari Photo - Validation des Quetes | Operation Gresigne" },
+      { title: "Safari Photo - Validation des Quetes | Operation Whiteout" },
       {
         name: "description",
         content:

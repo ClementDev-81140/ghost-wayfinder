@@ -7,7 +7,7 @@ import { QUETES } from "@/lib/quetes";
 export const Route = createFileRoute("/quetes")({
   head: () => ({
     meta: [
-      { title: "Journal de Quetes - ICARE-868 | Operation Gresigne" },
+      { title: "Journal de Quetes - ICARE-868 | Operation Whiteout" },
       {
         name: "description",
         content:
