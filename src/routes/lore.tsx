@@ -10,7 +10,7 @@ export const Route = createFileRoute("/lore")({
       {
         name: "description",
         content:
-          "Chronologie secrete de la Foret de Gresigne (1160-aujourd'hui) et lexique interdit de l'Ordre des Pionniers : Terminal Civil, Whiteout, Le Murmure.",
+          "Chronologie secrete de la Foret de Gresigne (1160-aujourd'hui) et lexique de l'Ordre des Pionniers : Terminal Civil, Whiteout, Le Murmure.",
       },
       { property: "og:title", content: "Archives de l'Ordre des Pionniers" },
       {
@@ -51,7 +51,7 @@ function LorePage() {
       </section>
 
       <section className="mt-2 hud-panel p-3">
-        <p className="hud-label">LEXIQUE INTERDIT</p>
+        <p className="hud-label">LEXIQUE DE L&apos;ORDRE</p>
         <dl className="mt-2 space-y-2">
           {LEXIQUE.map((l) => (
             <div key={l.term} className="border border-border p-2">

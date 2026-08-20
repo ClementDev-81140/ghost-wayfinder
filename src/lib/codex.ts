@@ -12,22 +12,22 @@ export const FLORE: FloraEntry[] = [
   {
     name: "Chêne Rouvre & Chêne Pubescent",
     role: "Arbres rois de la Grésigne. Troncs massifs et cavités naturelles : supports des Caches de l'Ombre et des antennes du réseau radio.",
-    points: 0,
+    points: 2,
   },
   {
     name: "Hêtre Commun (Fau)",
     role: "Zones sombres et humides. Forme la Canopée Noire, idéale pour se déplacer à l'abri des satellites de surveillance.",
-    points: 0,
+    points: 1,
   },
   {
     name: "Fougère Aigle",
     role: "Couverture parfaite pour le camouflage au sol lors des phases de discrétion.",
-    points: 0,
+    points: 0.5,
   },
   {
     name: "Néflier Sauvage",
     role: "Produit des nèfles consommables après les premières gelées. Nourriture de survie cruciale.",
-    points: 0,
+    points: 1.5,
   },
   {
     name: "Belladone",
@@ -36,7 +36,7 @@ export const FLORE: FloraEntry[] = [
     symptoms:
       "Mydriase (pupilles très dilatées), tachycardie, sécheresse buccale intense, choc thermique (forte fièvre), hallucinations.",
     secours: "PLS, hydratation par petites gouttes si conscient, alerte immédiate.",
-    points: 0,
+    points: 2,
   },
   {
     name: "Datura Officinal",
@@ -45,7 +45,7 @@ export const FLORE: FloraEntry[] = [
     symptoms:
       "Confusion mentale totale, amnésie, comportement agressif inconscient, rougeur cutanée.",
     secours: "PLS, maintien des fonctions vitales, isolement à l'ombre.",
-    points: 0,
+    points: 2,
   },
 ];
 

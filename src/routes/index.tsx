@@ -28,13 +28,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Operation Gresigne - HUD Tactique Offline" },
+      { title: "Operation Whiteout - HUD Tactique Offline" },
       {
         name: "description",
         content:
-          "Interface tactique offline-first pour le jeu de la Gresigne : carte vectorielle, Tempete en 4 phases, liaison LoRa 868 MHz et bouton SOS.",
+          "Interface tactique offline-first pour le jeu Whiteout : carte vectorielle, Tempete en 4 phases, liaison LoRa 868 MHz et bouton SOS.",
       },
-      { property: "og:title", content: "Operation Gresigne - HUD Tactique Offline" },
+      { property: "og:title", content: "Operation Whiteout - HUD Tactique Offline" },
       {
         property: "og:description",
         content:
@@ -132,7 +132,7 @@ function Index() {
 
       <header className="relative z-40 flex items-start justify-between border-b border-border py-3">
         <div>
-          <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION GRESIGNE</h1>
+          <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
           <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
           <p className="hud-label">SCORE {score} PTS</p>
           <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
