@@ -127,6 +127,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <div className="crt-overlay" aria-hidden />
+      <div className="crt-sweep" aria-hidden />
     </QueryClientProvider>
   );
 }
