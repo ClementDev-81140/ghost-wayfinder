@@ -6,11 +6,12 @@ const LINKS = [
   { to: "/codex", label: "CODEX" },
   { to: "/photo", label: "PHOTO" },
   { to: "/lore", label: "LORE" },
+  { to: "/bareme", label: "BAREME" },
 ] as const;
 
 export function HudNav() {
   return (
-    <nav className="grid grid-cols-5 gap-2 py-2">
+    <nav className="grid grid-cols-3 gap-2 sm:grid-cols-6 py-2">
       {LINKS.map((l) => (
         <Link
           key={l.to}
