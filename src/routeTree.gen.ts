@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BaremeRouteImport } from './routes/bareme'
 import { Route as CodexRouteImport } from './routes/codex'
 import { Route as LoreRouteImport } from './routes/lore'
 import { Route as PhotoRouteImport } from './routes/photo'
@@ -18,6 +19,11 @@ import { Route as QuetesRouteImport } from './routes/quetes'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaremeRoute = BaremeRouteImport.update({
+  id: '/bareme',
+  path: '/bareme',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CodexRoute = CodexRouteImport.update({
@@ -43,6 +49,7 @@ const QuetesRoute = QuetesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
@@ -65,14 +74,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/codex' | '/lore' | '/photo' | '/quetes'
+  fullPaths: '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/codex' | '/lore' | '/photo' | '/quetes'
-  id: '__root__' | '/' | '/codex' | '/lore' | '/photo' | '/quetes'
+  to: '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
+  id: '__root__' | '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BaremeRoute: typeof BaremeRoute
   CodexRoute: typeof CodexRoute
   LoreRoute: typeof LoreRoute
   PhotoRoute: typeof PhotoRoute
@@ -86,6 +96,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bareme': {
+      id: '/bareme'
+      path: '/bareme'
+      fullPath: '/bareme'
+      preLoaderRoute: typeof BaremeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/codex': {
@@ -121,6 +138,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BaremeRoute: BaremeRoute,
   CodexRoute: CodexRoute,
   LoreRoute: LoreRoute,
   PhotoRoute: PhotoRoute,
