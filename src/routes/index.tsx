@@ -230,7 +230,7 @@ function Index() {
             <button
               key={label}
               onClick={() => setPlayer({ ...p })}
-              className="border border-border py-2 text-[11px] tracking-[0.15em] text-muted-foreground"
+              className="hud-corners border border-border bg-secondary/20 py-2 text-[11px] tracking-[0.15em] text-muted-foreground hover:border-ring hover:bg-primary/15 hover:text-foreground"
             >
               {label}
             </button>
