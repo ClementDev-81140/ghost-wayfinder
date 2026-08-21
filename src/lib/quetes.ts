@@ -9,6 +9,7 @@ export type Quest = {
   brief: string;
   steps: QuestStep[];
   reward: string;
+  points?: number;
 };
 
 export const QUETES: Quest[] = [
@@ -36,6 +37,7 @@ export const QUETES: Quest[] = [
       },
     ],
     reward: "Exfiltration programmée - trame principale validée.",
+    points: 40,
   },
   {
     id: "alerte-randonneur",
@@ -56,6 +58,7 @@ export const QUETES: Quest[] = [
     ],
     reward:
       "Clé USB étanche contenant les diagnostics de vol du drone : réduction du rayon de recherche de la carcasse.",
+    points: 15,
   },
   {
     id: "safari-photo",
@@ -76,6 +79,63 @@ export const QUETES: Quest[] = [
       },
       { label: "VALIDATION JURY", detail: "Contrôle final par le jury du Quartier Général de Vaour." },
     ],
-    reward: "+5 pts / +3 pts par observation validée.",
+    reward: "+5 pts / +3 pts par observation validée (plafond 10 pts).",
+    points: 10,
+  },
+  {
+    id: "memoire-pierres",
+    code: "PIERRE-07",
+    title: "La Mémoire des Pierres",
+    kind: "BONUS DISCRETION",
+    points: 7,
+    brief:
+      "Dolmen de Peyrelevade : la roche porte des gravures qui ne révèlent leur tracé que sous éclairage rasant. Le champ magnétique local, responsable de la chute du VULCAIN-X, perturbe toute boussole classique.",
+    steps: [
+      { label: "DECODER LES GRAVURES", detail: "Éclairage rasant sur les dalles, relevé des symboles lumineux de l'Ordre." },
+      { label: "RELEVER LES ANOMALIES", detail: "Comparer le cap magnétique et le cap réel autour du dolmen, consigner les écarts." },
+    ],
+    reward: "+7 pts et corrélation avec la zone de crash du drone.",
+  },
+  {
+    id: "relais-canopee",
+    code: "RELAIS-06",
+    title: "Le Relais de la Canopée",
+    kind: "TRAME PRINCIPALE",
+    points: 6,
+    brief:
+      "L'ancien mât de guet domine la Canopée Noire. Son relais radio est muet : il faut reconstituer le signal pour rétablir la portée 868 MHz vers Vaour.",
+    steps: [
+      { label: "ATTEINDRE LE MAT DE GUET", detail: "Progression discrète sous couvert jusqu'au point haut." },
+      { label: "RECONSTITUER LE SIGNAL", detail: "Réaligner l'antenne et retrouver la séquence d'accord du relais." },
+    ],
+    reward: "+6 pts et couverture radio étendue sur le secteur nord.",
+  },
+  {
+    id: "herbarium",
+    code: "HERBA-06",
+    title: "L'Herbarium de l'Ordre",
+    kind: "BONUS DISCRETION",
+    points: 6,
+    brief:
+      "Les Pionniers entretiennent depuis 1843 une cartographie des plantes officinales de la Grésigne. Trois espèces doivent être relevées et situées.",
+    steps: [
+      { label: "IDENTIFIER 3 ESPECES", detail: "Reconnaissance botanique appuyée sur les fiches du Codex." },
+      { label: "CARTOGRAPHIER", detail: "Horodatage et géolocalisation de chaque relevé sur Le Node." },
+    ],
+    reward: "+6 pts au bareme officiel.",
+  },
+  {
+    id: "cache-maquisards",
+    code: "MAQUIS-06",
+    title: "La Cache des Maquisards",
+    kind: "TRAME PRINCIPALE",
+    points: 6,
+    brief:
+      "Un conteneur étanche de la Résistance de 1944 dort encore sous la Grésigne. Son emplacement est protégé par une énigme historique laissée par l'Ordre.",
+    steps: [
+      { label: "RESOUDRE L'ENIGME HISTORIQUE", detail: "Croiser les archives de l'Ordre et les repères de terrain." },
+      { label: "RECUPERER LE CONTENEUR", detail: "Extraction sans dégradation du site, remise en état après ouverture." },
+    ],
+    reward: "+6 pts et pièce d'archive versée au dossier final.",
   },
 ];

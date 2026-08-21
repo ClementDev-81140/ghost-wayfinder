@@ -9,7 +9,8 @@ import { QuestJournal } from "@/components/hud/QuestJournal";
 import { SosButton } from "@/components/hud/SosButton";
 import { SosOverlay } from "@/components/hud/SosOverlay";
 import { TacticalMap } from "@/components/hud/TacticalMap";
-import { addPenalty, totalPoints, useScore } from "@/lib/score";
+import { gradeFor } from "@/lib/bareme";
+import { addPenalty, disqualify, totalPoints, useScore } from "@/lib/score";
 import {
   KIND_LABEL,
   PHASES,
@@ -57,6 +58,7 @@ function Index() {
   const [pos, setPos] = useState({ lat: QG.lat, lon: QG.lon });
   const scoreState = useScore();
   const score = totalPoints(scoreState);
+  const grade = gradeFor(score);
   const [outSeconds, setOutSeconds] = useState(0);
   const [sos, setSos] = useState(false);
   const [waypoint, setWaypoint] = useState<string | null>("GR-01");
@@ -135,13 +137,17 @@ function Index() {
           <h1 className="text-glow text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
           <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
           <p className="hud-label">
-            SCORE <span className="text-glow text-alert tabular-nums">{score}</span> PTS
+            SCORE <span className="text-glow text-alert tabular-nums">{score}</span> / 100 PTS
           </p>
           <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
+          <p className="hud-label">GRADE {grade.name.toUpperCase()}</p>
         </div>
         <div className="flex items-start gap-2">
           <MessageQg lat={pos.lat} lon={pos.lon} />
-          <SosButton onArmed={() => setSos(true)} />
+          <SosButton onArmed={() => {
+            disqualify();
+            setSos(true);
+          }} />
         </div>
       </header>
 
