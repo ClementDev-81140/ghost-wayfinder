@@ -150,14 +150,16 @@ function Index() {
       </div>
 
       <section className="mt-3 grid grid-cols-2 gap-2">
-        <div className="hud-panel p-3">
+        <div className="hud-panel hud-corners tac-boot p-3">
           <p className="hud-label">TEMPETE / {PHASES[phase].label}</p>
-          <p className="mt-1 text-2xl tabular-nums text-alert">{formatClock(countdown)}</p>
+          <p className="text-glow-alert mt-1 text-2xl tabular-nums text-alert">{formatClock(countdown)}</p>
           <p className="hud-label mt-1">{PHASES[phase].window}</p>
         </div>
-        <div className="hud-panel p-3">
+        <div className="hud-panel hud-corners tac-boot p-3">
           <p className="hud-label">STATUT ZONE</p>
-          <p className={`mt-1 text-lg ${outOfZone ? "text-alert tac-pulse" : "text-foreground"}`}>
+          <p
+            className={`mt-1 text-lg ${outOfZone ? "text-alert text-glow-alert tac-blink" : "text-foreground text-glow"}`}
+          >
             {outOfZone ? "HORS-ZONE" : "EN ZONE"}
           </p>
           <p className="hud-label mt-1">
@@ -166,7 +168,8 @@ function Index() {
         </div>
       </section>
 
-      <section className="mt-2 hud-panel p-3 text-primary">
+      <section className="mt-2 hud-panel hud-corners p-3 text-primary">
+
         <CompassReticle
           heading={heading}
           lat={pos.lat}
