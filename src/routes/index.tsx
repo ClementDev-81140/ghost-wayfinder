@@ -193,7 +193,7 @@ function Index() {
         />
 
         {target ? (
-          <div className="mt-2 hud-panel p-3">
+          <div className="mt-2 hud-panel hud-corners tac-boot p-3">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <p className="hud-label">{KIND_LABEL[target.kind]}</p>
