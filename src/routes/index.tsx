@@ -131,10 +131,12 @@ function Index() {
       )}
 
       <header className="relative z-40 flex items-start justify-between border-b border-border py-3">
-        <div>
-          <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
+        <div className="tac-boot">
+          <h1 className="text-glow text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
           <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
-          <p className="hud-label">SCORE {score} PTS</p>
+          <p className="hud-label">
+            SCORE <span className="text-glow text-alert tabular-nums">{score}</span> PTS
+          </p>
           <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
         </div>
         <div className="flex items-start gap-2">
