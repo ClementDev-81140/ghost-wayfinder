@@ -16,10 +16,10 @@ export function HudNav() {
           key={l.to}
           to={l.to}
           activeOptions={{ exact: true }}
-          className="border border-border py-2 text-center text-[10px] tracking-[0.12em] text-muted-foreground"
+          className="hud-corners border border-border bg-secondary/20 py-2 text-center text-[10px] tracking-[0.12em] text-muted-foreground hover:border-ring hover:bg-primary/15 hover:text-foreground"
           activeProps={{
             className:
-              "border border-primary bg-primary/25 py-2 text-center text-[10px] tracking-[0.12em] text-foreground shadow-hud",
+              "hud-corners border border-primary bg-primary/25 py-2 text-center text-[10px] tracking-[0.12em] text-foreground shadow-hud text-glow",
           }}
         >
           {l.label}

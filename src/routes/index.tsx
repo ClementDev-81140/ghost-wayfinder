@@ -131,10 +131,12 @@ function Index() {
       )}
 
       <header className="relative z-40 flex items-start justify-between border-b border-border py-3">
-        <div>
-          <h1 className="text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
+        <div className="tac-boot">
+          <h1 className="text-glow text-sm tracking-[0.25em] text-foreground">OPERATION WHITEOUT</h1>
           <p className="hud-label mt-1">MODE KIOSQUE VERROUILLE / OFFLINE-FIRST</p>
-          <p className="hud-label">SCORE {score} PTS</p>
+          <p className="hud-label">
+            SCORE <span className="text-glow text-alert tabular-nums">{score}</span> PTS
+          </p>
           <p className="hud-label">PREUVES PHOTO {scoreState.captures.length}</p>
         </div>
         <div className="flex items-start gap-2">
@@ -148,14 +150,16 @@ function Index() {
       </div>
 
       <section className="mt-3 grid grid-cols-2 gap-2">
-        <div className="hud-panel p-3">
+        <div className="hud-panel hud-corners tac-boot p-3">
           <p className="hud-label">TEMPETE / {PHASES[phase].label}</p>
-          <p className="mt-1 text-2xl tabular-nums text-alert">{formatClock(countdown)}</p>
+          <p className="text-glow-alert mt-1 text-2xl tabular-nums text-alert">{formatClock(countdown)}</p>
           <p className="hud-label mt-1">{PHASES[phase].window}</p>
         </div>
-        <div className="hud-panel p-3">
+        <div className="hud-panel hud-corners tac-boot p-3">
           <p className="hud-label">STATUT ZONE</p>
-          <p className={`mt-1 text-lg ${outOfZone ? "text-alert tac-pulse" : "text-foreground"}`}>
+          <p
+            className={`mt-1 text-lg ${outOfZone ? "text-alert text-glow-alert tac-blink" : "text-foreground text-glow"}`}
+          >
             {outOfZone ? "HORS-ZONE" : "EN ZONE"}
           </p>
           <p className="hud-label mt-1">
@@ -164,7 +168,8 @@ function Index() {
         </div>
       </section>
 
-      <section className="mt-2 hud-panel p-3 text-primary">
+      <section className="mt-2 hud-panel hud-corners p-3 text-primary">
+
         <CompassReticle
           heading={heading}
           lat={pos.lat}
@@ -188,7 +193,7 @@ function Index() {
         />
 
         {target ? (
-          <div className="mt-2 hud-panel p-3">
+          <div className="mt-2 hud-panel hud-corners tac-boot p-3">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <p className="hud-label">{KIND_LABEL[target.kind]}</p>
@@ -225,7 +230,7 @@ function Index() {
             <button
               key={label}
               onClick={() => setPlayer({ ...p })}
-              className="border border-border py-2 text-[11px] tracking-[0.15em] text-muted-foreground"
+              className="hud-corners border border-border bg-secondary/20 py-2 text-[11px] tracking-[0.15em] text-muted-foreground hover:border-ring hover:bg-primary/15 hover:text-foreground"
             >
               {label}
             </button>
