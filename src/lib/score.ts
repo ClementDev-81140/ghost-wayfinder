@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from "react";
 
+import { OBJECTIFS, SAFARI_CAP, TOTAL_MAX } from "@/lib/bareme";
+
 export type Capture = {
   id: string;
   species: string;
@@ -12,13 +14,15 @@ export type Capture = {
 };
 
 export type ScoreState = {
-  base: number;
+  /** objectifs du bareme valides par le jury (hors safari photo) */
+  objectives: Record<string, boolean>;
   penalties: number;
+  disqualified: boolean;
   captures: Capture[];
 };
 
-const KEY = "gresigne-score-v1";
-const DEFAULT: ScoreState = { base: 120, penalties: 0, captures: [] };
+const KEY = "gresigne-score-v2";
+const DEFAULT: ScoreState = { objectives: {}, penalties: 0, disqualified: false, captures: [] };
 
 let state: ScoreState = DEFAULT;
 let loaded = false;
@@ -56,8 +60,21 @@ function getSnapshot(): ScoreState {
   return state;
 }
 
+export function safariPoints(s: ScoreState) {
+  return Math.min(SAFARI_CAP, s.captures.reduce((acc, c) => acc + c.points, 0));
+}
+
+export function objectivePoints(s: ScoreState) {
+  return OBJECTIFS.filter((o) => o.id !== "safari" && s.objectives[o.id]).reduce(
+    (acc, o) => acc + o.points,
+    0,
+  );
+}
+
 export function totalPoints(s: ScoreState) {
-  return s.base + s.captures.reduce((acc, c) => acc + c.points, 0) - s.penalties;
+  if (s.disqualified) return 0;
+  const raw = objectivePoints(s) + safariPoints(s) - s.penalties;
+  return Math.max(0, Math.min(TOTAL_MAX, raw));
 }
 
 export function useScore() {
@@ -69,9 +86,19 @@ export function addCapture(capture: Capture) {
   commit({ ...state, captures: [capture, ...state.captures].slice(0, 40) });
 }
 
+export function toggleObjective(id: string) {
+  load();
+  commit({ ...state, objectives: { ...state.objectives, [id]: !state.objectives[id] } });
+}
+
 export function addPenalty(points: number) {
   load();
   commit({ ...state, penalties: state.penalties + points });
+}
+
+export function disqualify() {
+  load();
+  commit({ ...state, disqualified: true });
 }
 
 export function resetScore() {
