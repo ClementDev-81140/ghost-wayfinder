@@ -53,7 +53,10 @@ function QuetesPage() {
                   </span>
                   <span className="text-sm text-foreground">{q.title}</span>
                 </span>
-                <span className="text-alert">{expanded ? "-" : "+"}</span>
+                <span className="flex items-center gap-2">
+                  {q.points ? <span className="text-xs text-alert">{q.points} PTS</span> : null}
+                  <span className="text-alert">{expanded ? "-" : "+"}</span>
+                </span>
               </button>
 
               {expanded && (
