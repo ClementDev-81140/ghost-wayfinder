@@ -167,5 +167,5 @@ export const GRADES: Grade[] = [
 ];
 
 export function gradeFor(score: number): Grade {
-  return GRADES.find((g) => !g.secret && score >= g.min) ?? GRADES[3];
+  return GRADES.find((g) => !g.secret && score >= g.min) ?? GRADES[3]!;
 }
