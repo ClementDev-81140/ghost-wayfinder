@@ -133,6 +133,19 @@ function BaremePage() {
       ))}
 
       <section className="mt-4">
+        <h2 className="hud-label">BONUS ZERO TRACE & DEPOLLUTION</h2>
+        <ul className="hud-panel mt-2 divide-y divide-border/60">
+          {BONUS.map((b) => (
+            <li key={b.label} className="flex items-start justify-between gap-3 p-3">
+              <span className="text-xs text-muted-foreground">{b.label}</span>
+              <span className="whitespace-nowrap text-xs text-foreground text-glow">{b.gain}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-4">
+
         <h2 className="hud-label">GRILLE DES MALUS & PENALITES</h2>
         <ul className="hud-panel mt-2 divide-y divide-border/60">
           {MALUS.map((m) => (
