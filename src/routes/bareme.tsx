@@ -1,8 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { HudNav } from "@/components/hud/HudNav";
-import { GRADES, MALUS, OBJECTIFS, TOTAL_MAX, gradeFor } from "@/lib/bareme";
+import {
+  BONUS,
+  GRADES,
+  GRADES_NPC,
+  MALUS,
+  OBJECTIFS,
+  TOTAL_MAX,
+  docFor,
+  gradeFor,
+} from "@/lib/bareme";
 import { objectivePoints, safariPoints, toggleObjective, totalPoints, useScore } from "@/lib/score";
+
 
 export const Route = createFileRoute("/bareme")({
   head: () => ({
@@ -123,6 +133,19 @@ function BaremePage() {
       ))}
 
       <section className="mt-4">
+        <h2 className="hud-label">BONUS ZERO TRACE & DEPOLLUTION</h2>
+        <ul className="hud-panel mt-2 divide-y divide-border/60">
+          {BONUS.map((b) => (
+            <li key={b.label} className="flex items-start justify-between gap-3 p-3">
+              <span className="text-xs text-muted-foreground">{b.label}</span>
+              <span className="whitespace-nowrap text-xs text-foreground text-glow">{b.gain}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-4">
+
         <h2 className="hud-label">GRILLE DES MALUS & PENALITES</h2>
         <ul className="hud-panel mt-2 divide-y divide-border/60">
           {MALUS.map((m) => (
@@ -165,6 +188,37 @@ function BaremePage() {
           })}
         </div>
       </section>
+
+      {doc && (
+        <section className="mt-4">
+          <h2 className="hud-label">DOCUMENT OFFICIEL PROJETE</h2>
+          <article className="hud-panel hud-corners mt-2 border-primary p-3 shadow-hud">
+            <p className="hud-label">ORDRE DES PIONNIERS</p>
+            <p className="text-glow mt-1 text-sm tracking-[0.18em] text-foreground">{doc.title}</p>
+            <p className="mt-2 text-[12px] italic leading-relaxed text-alert">{doc.motto}</p>
+            <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{doc.body}</p>
+          </article>
+        </section>
+      )}
+
+      <section className="mt-4">
+        <h2 className="hud-label">GRADES NON JOUEURS / ENCADREMENT</h2>
+        <div className="mt-2 space-y-2">
+          {GRADES_NPC.map((n) => (
+            <article key={n.name} className="hud-panel p-3">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-sm text-foreground">{n.name}</p>
+                <span className="hud-label whitespace-nowrap">{n.thread}</span>
+              </div>
+              <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{n.profil}</p>
+              <p className="hud-label mt-2">ATTRIBUT</p>
+              <p className="text-[12px] text-foreground">{n.attribut}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+
 
       <p className="hud-label mt-4 text-center">
         VALIDATION FINALE PAR LE JURY / RELEVES APPLICATION FAISANT FOI

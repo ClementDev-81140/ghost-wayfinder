@@ -101,14 +101,23 @@ export const SAFARI_CAP = 10;
 export type Malus = { label: string; cost: string; fatal?: boolean };
 
 export const MALUS: Malus[] = [
-  { label: "Indice de progression ou aide demandee au QG", cost: "-5 PTS / INDICE" },
+  { label: "Demande d'indice de progression ou d'aide au QG", cost: "-2 PTS / INDICE" },
   { label: "Incursion hors-zone (Tempete > 5 min)", cost: "-5 PTS / 10 MIN" },
   { label: "Retard d'extraction a Vaour au-dela de 24h", cost: "-5 PTS / 15 MIN" },
-  { label: "Violation du couvre-feu nocturne (20h00 - 06h00)", cost: "-15 PTS" },
-  { label: "Non-respect d'un critere Zero Trace au bivouac", cost: "-X PTS / DISQUALIFICATION" , fatal: true },
-  { label: "Declenchement du bouton SOS ou du sifflet d'urgence", cost: "SCORE = 0", fatal: true },
+  { label: "Violation du couvre-feu nocturne (deplacement 20h00 - 06h00)", cost: "-15 PTS" },
+  { label: "Non-respect d'un critere Zero Trace au bivouac", cost: "-25 PTS / DISQUALIFICATION", fatal: true },
+  { label: "Declenchement du bouton SOS ou du sifflet d'urgence", cost: "DISQUALIFICATION IMMEDIATE", fatal: true },
   { label: "Extraction au-dela de 25h", cost: "DISQUALIFICATION ABSOLUE", fatal: true },
 ];
+
+export type Bonus = { label: string; gain: string };
+
+export const BONUS: Bonus[] = [
+  { label: "Depollution d'un site majeur signale par le QG (Zone Critique)", gain: "+5 PTS" },
+  { label: "Nettoyage actif de la nature", gain: "+2 PTS / KG" },
+  { label: "Dechet insolite (coup de coeur du jury : batterie, plastique incruste...)", gain: "+5 PTS" },
+];
+
 
 export type Grade = {
   name: string;
@@ -169,3 +178,76 @@ export const GRADES: Grade[] = [
 export function gradeFor(score: number): Grade {
   return GRADES.find((g) => !g.secret && score >= g.min) ?? GRADES[3]!;
 }
+
+export type OfficialDoc = { grade: string; title: string; motto: string; body: string };
+
+export const DOCUMENTS: OfficialDoc[] = [
+  {
+    grade: "Pionnier Apprenti",
+    title: "SAUF-CONDUIT DU REVENANT",
+    motto: "Le premier pas est toujours le plus rude, mais la terre se souvient de ceux qui osent la fouler.",
+    body: "Ce document atteste que le detenteur a brave son premier bapteme du feu. Le terrain s'est montre redoutable, le comedien insaisissable et la faune farouche. Pourtant l'essentiel est acquis : l'experience est gravee, les pieges sont reperes. Ce sauf-conduit vous invite officiellement a revenir pour votre second passage, avec un statut prioritaire. Revenez plus fort, la foret vous attend.",
+  },
+  {
+    grade: "Pionnier Sentinelle de Reserve",
+    title: "BREVET DE VIGILANCE",
+    motto: "La survie pure ne s'improvise pas, elle se decrete.",
+    body: "Valide sur le fil au detriment des quetes secondaires, votre parcours prouve votre resilience face a la contraction de la zone. En vertu de vos competences de survie brute, ce brevet vous affecte officiellement a la Surveillance des Lisieres en tant que Sentinelle de Reserve. Soyez le rempart la ou le monde sauvage commence.",
+  },
+  {
+    grade: "Pionnier Cartographe de Terrain",
+    title: "CERTIFICAT D'APTITUDE CARTOGRAPHIQUE",
+    motto: "Tracer la voie, meme lorsque les ombres s'allongent.",
+    body: "Felicitations pour votre excellente exploration du secteur et la localisation rapide du drone. Malgre quelques alertes de la faune et de legeres imprecisions lors du bilan vital du randonneur, votre maitrise du terrain est incontestable. Vous etes eleve au rang de Cartographe de Terrain. La carte est votre arme.",
+  },
+  {
+    grade: "Pionnier Eclaireur-Sauveteur",
+    title: "DIPLOME DE TRES HAUTE APTITUDE",
+    motto: "Orientation parfaite, discretion totale, secours absolu. L'Elite.",
+    body: "Face au secours, face au chronometre, face a la nature, vous avez frole la perfection. Votre Safari Photo est valide, vos reflexes de secourisme ont sauve des vies. Par decret de l'Ordre, vous recevez la bordure en fil d'or et l'acces exclusif au statut de Maitre du Jeu. Vous n'obeissez plus aux regles, vous les gardez.",
+  },
+  {
+    grade: "Pionnier de l'Ombre",
+    title: "DIPLOME DES SECRETS MAJEURS",
+    motto: "Les yeux ordinaires regardent la carte. Les votres ont vu la verite.",
+    body: "Vous n'avez pas seulement suivi le sentier. Vous avez decode les anomalies, franchi les barrieres invisibles et perce le secret enfoui qui dort sous ce jeu. Ce titre de Gardien du Mythe certifie votre initiation aux arcanes de notre organisation. Gardez le silence, car le secret vous garde.",
+  },
+];
+
+export function docFor(gradeName: string): OfficialDoc | undefined {
+  return DOCUMENTS.find((d) => d.grade === gradeName);
+}
+
+export type NpcGrade = { name: string; thread: string; profil: string; attribut: string };
+
+export const GRADES_NPC: NpcGrade[] = [
+  {
+    name: "Pionnier Auditeur de Session",
+    thread: "FIL BLEU MARINE",
+    profil:
+      "Le maitre du jeu. Depuis le QG de Vaour ou via le Murmure, il gere la narration, applique le Whiteout, valide les requetes, declenche la Tempete et applique les malus. Il extrait les releves, valide le Safari Photo et prepare les enveloppes.",
+    attribut: "La console de supervision (Ecorce-Mere / Root-Terminal) et le chronometre de crise officiel.",
+  },
+  {
+    name: "Pionnier Coordinateur de Terrain",
+    thread: "FIL SABLE / TERRE DU TARN",
+    profil:
+      "L'oeil technique sur le terrain : mise en place invisible du drone et du comedien, securite physique des equipes, controle des consignes, intervention immediate en cas d'urgence medicale ou de rupture des limites de la Tempete.",
+    attribut: "Le Trauma-Kit de l'Ordre et la cle de deverrouillage d'urgence des Terminaux Civils.",
+  },
+  {
+    name: "Pionnier Inspecteur General",
+    thread: "FOND NOIR MAT & VERT KAKI / FIL ROUGE",
+    profil:
+      "L'autorite supreme : supervise Auditeurs et Coordinateurs, tranche les cas litigieux lors de l'Audit Final et signe les Diplomes ou Lettres de Resiliation. Garant ultime du Manifeste de 1843.",
+    attribut: "Le Sceau officiel de l'Ordre et la Cle Maitresse de chiffrement du reseau LoRa.",
+  },
+  {
+    name: "Pionnier Sympathisant de l'Ordre",
+    thread: "FIL VERT CITRON FLASH",
+    profil:
+      "Allie precieux de la confrerie : proprietaire terrien, partenaire local ou ancien Pionnier. Il soutient la cause et applique la resistance numerique au quotidien sans participer aux operations.",
+    attribut: "Reconnaissance officielle et droit d'acces moral au cercle, sans pouvoir d'administration.",
+  },
+];
+
