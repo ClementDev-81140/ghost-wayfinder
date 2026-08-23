@@ -101,14 +101,23 @@ export const SAFARI_CAP = 10;
 export type Malus = { label: string; cost: string; fatal?: boolean };
 
 export const MALUS: Malus[] = [
-  { label: "Indice de progression ou aide demandee au QG", cost: "-5 PTS / INDICE" },
+  { label: "Demande d'indice de progression ou d'aide au QG", cost: "-2 PTS / INDICE" },
   { label: "Incursion hors-zone (Tempete > 5 min)", cost: "-5 PTS / 10 MIN" },
   { label: "Retard d'extraction a Vaour au-dela de 24h", cost: "-5 PTS / 15 MIN" },
-  { label: "Violation du couvre-feu nocturne (20h00 - 06h00)", cost: "-15 PTS" },
-  { label: "Non-respect d'un critere Zero Trace au bivouac", cost: "-X PTS / DISQUALIFICATION" , fatal: true },
-  { label: "Declenchement du bouton SOS ou du sifflet d'urgence", cost: "SCORE = 0", fatal: true },
+  { label: "Violation du couvre-feu nocturne (deplacement 20h00 - 06h00)", cost: "-15 PTS" },
+  { label: "Non-respect d'un critere Zero Trace au bivouac", cost: "-25 PTS / DISQUALIFICATION", fatal: true },
+  { label: "Declenchement du bouton SOS ou du sifflet d'urgence", cost: "DISQUALIFICATION IMMEDIATE", fatal: true },
   { label: "Extraction au-dela de 25h", cost: "DISQUALIFICATION ABSOLUE", fatal: true },
 ];
+
+export type Bonus = { label: string; gain: string };
+
+export const BONUS: Bonus[] = [
+  { label: "Depollution d'un site majeur signale par le QG (Zone Critique)", gain: "+5 PTS" },
+  { label: "Nettoyage actif de la nature", gain: "+2 PTS / KG" },
+  { label: "Dechet insolite (coup de coeur du jury : batterie, plastique incruste...)", gain: "+5 PTS" },
+];
+
 
 export type Grade = {
   name: string;
