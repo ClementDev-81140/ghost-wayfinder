@@ -1,8 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { HudNav } from "@/components/hud/HudNav";
-import { GRADES, MALUS, OBJECTIFS, TOTAL_MAX, gradeFor } from "@/lib/bareme";
+import {
+  BONUS,
+  GRADES,
+  GRADES_NPC,
+  MALUS,
+  OBJECTIFS,
+  TOTAL_MAX,
+  docFor,
+  gradeFor,
+} from "@/lib/bareme";
 import { objectivePoints, safariPoints, toggleObjective, totalPoints, useScore } from "@/lib/score";
+
 
 export const Route = createFileRoute("/bareme")({
   head: () => ({
