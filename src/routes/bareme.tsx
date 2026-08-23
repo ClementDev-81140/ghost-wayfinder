@@ -189,6 +189,37 @@ function BaremePage() {
         </div>
       </section>
 
+      {doc && (
+        <section className="mt-4">
+          <h2 className="hud-label">DOCUMENT OFFICIEL PROJETE</h2>
+          <article className="hud-panel hud-corners mt-2 border-primary p-3 shadow-hud">
+            <p className="hud-label">ORDRE DES PIONNIERS</p>
+            <p className="text-glow mt-1 text-sm tracking-[0.18em] text-foreground">{doc.title}</p>
+            <p className="mt-2 text-[12px] italic leading-relaxed text-alert">{doc.motto}</p>
+            <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{doc.body}</p>
+          </article>
+        </section>
+      )}
+
+      <section className="mt-4">
+        <h2 className="hud-label">GRADES NON JOUEURS / ENCADREMENT</h2>
+        <div className="mt-2 space-y-2">
+          {GRADES_NPC.map((n) => (
+            <article key={n.name} className="hud-panel p-3">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-sm text-foreground">{n.name}</p>
+                <span className="hud-label whitespace-nowrap">{n.thread}</span>
+              </div>
+              <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{n.profil}</p>
+              <p className="hud-label mt-2">ATTRIBUT</p>
+              <p className="text-[12px] text-foreground">{n.attribut}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+
+
       <p className="hud-label mt-4 text-center">
         VALIDATION FINALE PAR LE JURY / RELEVES APPLICATION FAISANT FOI
       </p>
