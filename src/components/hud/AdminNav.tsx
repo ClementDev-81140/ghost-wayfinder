@@ -1,24 +1,21 @@
 import { Link } from "@tanstack/react-router";
 
 const LINKS = [
-  { to: "/", label: "HUD" },
-  { to: "/quetes", label: "QUETES" },
-  { to: "/codex", label: "CODEX" },
-  { to: "/photo", label: "PHOTO" },
-  { to: "/lore", label: "LORE" },
-  { to: "/bareme", label: "BAREME" },
-  { to: "/simulateur", label: "MAQUIS" },
+  { to: "/admin", label: "QG", exact: true },
+  { to: "/admin/supervision", label: "SUPERVISION", exact: false },
+  { to: "/admin/run", label: "RUN TERRAIN", exact: false },
+  { to: "/admin/jury", label: "JURY", exact: false },
 ] as const;
 
-export function HudNav() {
+export function AdminNav() {
   return (
     <nav className="py-2">
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-7">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {LINKS.map((l) => (
           <Link
             key={l.to}
             to={l.to}
-            activeOptions={{ exact: true }}
+            activeOptions={{ exact: l.exact }}
             className="hud-corners border border-border bg-secondary/20 py-2 text-center text-[10px] tracking-[0.12em] text-muted-foreground hover:border-ring hover:bg-primary/15 hover:text-foreground"
             activeProps={{
               className:
@@ -31,10 +28,10 @@ export function HudNav() {
       </div>
       <div className="mt-2 flex justify-end">
         <Link
-          to="/admin"
-          className="border border-destructive/60 px-3 py-1 text-[10px] tracking-[0.18em] text-destructive hover:bg-destructive/15"
+          to="/"
+          className="border border-border px-3 py-1 text-[10px] tracking-[0.18em] text-muted-foreground hover:text-foreground"
         >
-          ACCES ROOT / QG
+          RETOUR INTERFACE JOUEUR
         </Link>
       </div>
     </nav>
