@@ -17,6 +17,7 @@ import { Route as LoreRouteImport } from './routes/lore'
 import { Route as PhotoRouteImport } from './routes/photo'
 import { Route as QuetesRouteImport } from './routes/quetes'
 import { Route as SimulateurRouteImport } from './routes/simulateur'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,37 +59,44 @@ const SimulateurRoute = SimulateurRouteImport.update({
   path: '/simulateur',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,16 +109,17 @@ export interface FileRouteTypes {
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/bareme'
     | '/codex'
     | '/lore'
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -121,11 +130,12 @@ export interface FileRouteTypes {
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BaremeRoute: typeof BaremeRoute
   CodexRoute: typeof CodexRoute
   LoreRoute: typeof LoreRoute
@@ -192,12 +202,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimulateurRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   BaremeRoute: BaremeRoute,
   CodexRoute: CodexRoute,
   LoreRoute: LoreRoute,
