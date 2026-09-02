@@ -47,6 +47,8 @@ function BaremePage() {
   const score = totalPoints(state);
   const grade = gradeFor(score);
   const safari = safariPoints(state);
+  const doc = docFor(grade.name);
+
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-3 pb-10">
