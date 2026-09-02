@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BaremeRouteImport } from './routes/bareme'
 import { Route as CodexRouteImport } from './routes/codex'
 import { Route as LoreRouteImport } from './routes/lore'
@@ -20,6 +21,11 @@ import { Route as SimulateurRouteImport } from './routes/simulateur'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BaremeRoute = BaremeRouteImport.update({
@@ -55,6 +61,7 @@ const SimulateurRoute = SimulateurRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/bareme': typeof BaremeRoute
   '/codex': typeof CodexRoute
   '/lore': typeof LoreRoute
@@ -84,13 +93,28 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes' | '/simulateur'
+    | '/'
+    | '/admin'
+    | '/bareme'
+    | '/codex'
+    | '/lore'
+    | '/photo'
+    | '/quetes'
+    | '/simulateur'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes' | '/simulateur'
+    | '/'
+    | '/admin'
+    | '/bareme'
+    | '/codex'
+    | '/lore'
+    | '/photo'
+    | '/quetes'
+    | '/simulateur'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/bareme'
     | '/codex'
     | '/lore'
@@ -101,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   BaremeRoute: typeof BaremeRoute
   CodexRoute: typeof CodexRoute
   LoreRoute: typeof LoreRoute
@@ -116,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bareme': {
@@ -165,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   BaremeRoute: BaremeRoute,
   CodexRoute: CodexRoute,
   LoreRoute: LoreRoute,
