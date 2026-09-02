@@ -18,6 +18,9 @@ import { Route as PhotoRouteImport } from './routes/photo'
 import { Route as QuetesRouteImport } from './routes/quetes'
 import { Route as SimulateurRouteImport } from './routes/simulateur'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminJuryRouteImport } from './routes/admin.jury'
+import { Route as AdminRunRouteImport } from './routes/admin.run'
+import { Route as AdminSupervisionRouteImport } from './routes/admin.supervision'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +67,21 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminJuryRoute = AdminJuryRouteImport.update({
+  id: '/jury',
+  path: '/jury',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRunRoute = AdminRunRouteImport.update({
+  id: '/run',
+  path: '/run',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupervisionRoute = AdminSupervisionRouteImport.update({
+  id: '/supervision',
+  path: '/supervision',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -74,6 +92,9 @@ export interface FileRoutesByFullPath {
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin/jury': typeof AdminJuryRoute
+  '/admin/run': typeof AdminRunRoute
+  '/admin/supervision': typeof AdminSupervisionRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -84,6 +105,9 @@ export interface FileRoutesByTo {
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin/jury': typeof AdminJuryRoute
+  '/admin/run': typeof AdminRunRoute
+  '/admin/supervision': typeof AdminSupervisionRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -96,6 +120,9 @@ export interface FileRoutesById {
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
   '/simulateur': typeof SimulateurRoute
+  '/admin/jury': typeof AdminJuryRoute
+  '/admin/run': typeof AdminRunRoute
+  '/admin/supervision': typeof AdminSupervisionRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -109,6 +136,9 @@ export interface FileRouteTypes {
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin/jury'
+    | '/admin/run'
+    | '/admin/supervision'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,6 +149,9 @@ export interface FileRouteTypes {
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin/jury'
+    | '/admin/run'
+    | '/admin/supervision'
     | '/admin'
   id:
     | '__root__'
@@ -130,6 +163,9 @@ export interface FileRouteTypes {
     | '/photo'
     | '/quetes'
     | '/simulateur'
+    | '/admin/jury'
+    | '/admin/run'
+    | '/admin/supervision'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -209,14 +245,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/jury': {
+      id: '/admin/jury'
+      path: '/jury'
+      fullPath: '/admin/jury'
+      preLoaderRoute: typeof AdminJuryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/run': {
+      id: '/admin/run'
+      path: '/run'
+      fullPath: '/admin/run'
+      preLoaderRoute: typeof AdminRunRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/supervision': {
+      id: '/admin/supervision'
+      path: '/supervision'
+      fullPath: '/admin/supervision'
+      preLoaderRoute: typeof AdminSupervisionRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminJuryRoute: typeof AdminJuryRoute
+  AdminRunRoute: typeof AdminRunRoute
+  AdminSupervisionRoute: typeof AdminSupervisionRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminJuryRoute: AdminJuryRoute,
+  AdminRunRoute: AdminRunRoute,
+  AdminSupervisionRoute: AdminSupervisionRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
