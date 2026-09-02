@@ -15,6 +15,7 @@ import { Route as CodexRouteImport } from './routes/codex'
 import { Route as LoreRouteImport } from './routes/lore'
 import { Route as PhotoRouteImport } from './routes/photo'
 import { Route as QuetesRouteImport } from './routes/quetes'
+import { Route as SimulateurRouteImport } from './routes/simulateur'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const QuetesRoute = QuetesRouteImport.update({
   path: '/quetes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SimulateurRoute = SimulateurRouteImport.update({
+  id: '/simulateur',
+  path: '/simulateur',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
+  '/simulateur': typeof SimulateurRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
+  '/simulateur': typeof SimulateurRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,13 +79,24 @@ export interface FileRoutesById {
   '/lore': typeof LoreRoute
   '/photo': typeof PhotoRoute
   '/quetes': typeof QuetesRoute
+  '/simulateur': typeof SimulateurRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
+  fullPaths:
+    '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes' | '/simulateur'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
-  id: '__root__' | '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes'
+  to:
+    '/' | '/bareme' | '/codex' | '/lore' | '/photo' | '/quetes' | '/simulateur'
+  id:
+    | '__root__'
+    | '/'
+    | '/bareme'
+    | '/codex'
+    | '/lore'
+    | '/photo'
+    | '/quetes'
+    | '/simulateur'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -87,6 +106,7 @@ export interface RootRouteChildren {
   LoreRoute: typeof LoreRoute
   PhotoRoute: typeof PhotoRoute
   QuetesRoute: typeof QuetesRoute
+  SimulateurRoute: typeof SimulateurRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -133,6 +153,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuetesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/simulateur': {
+      id: '/simulateur'
+      path: '/simulateur'
+      fullPath: '/simulateur'
+      preLoaderRoute: typeof SimulateurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -143,6 +170,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoreRoute: LoreRoute,
   PhotoRoute: PhotoRoute,
   QuetesRoute: QuetesRoute,
+  SimulateurRoute: SimulateurRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
