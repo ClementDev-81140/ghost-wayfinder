@@ -69,33 +69,37 @@
 :root {
   --radius: 0.25rem;
   /* Noir Tactique #121212 */
-  --background: oklch(0.185 0 0);
-  --foreground: oklch(0.84 0.055 118);
-  --card: oklch(0.222 0.008 118);
-  --card-foreground: oklch(0.84 0.055 118);
-  --popover: oklch(0.205 0.006 118);
-  --popover-foreground: oklch(0.84 0.055 118);
-  /* Bleu Tactique Militaire #1E3A5F */
-  --primary: oklch(0.42 0.075 230);
-  --primary-foreground: oklch(0.93 0.03 230);
-  --secondary: oklch(0.28 0.03 230);
-  --secondary-foreground: oklch(0.84 0.055 118);
-  --muted: oklch(0.26 0.02 230);
-  --muted-foreground: oklch(0.62 0.05 118);
-  --accent: oklch(0.35 0.06 230);
-  --accent-foreground: oklch(0.92 0.03 118);
+  --background: oklch(0.16 0.012 235);
+  --foreground: oklch(0.88 0.09 175);
+  --card: oklch(0.21 0.02 235);
+  --card-foreground: oklch(0.88 0.09 175);
+  --popover: oklch(0.19 0.015 235);
+  --popover-foreground: oklch(0.88 0.09 175);
+  /* Bleu Tactique Militaire #1E3A5F — rehausse neon */
+  --primary: oklch(0.48 0.12 230);
+  --primary-foreground: oklch(0.95 0.03 200);
+  --secondary: oklch(0.28 0.05 230);
+  --secondary-foreground: oklch(0.88 0.09 175);
+  --muted: oklch(0.26 0.04 230);
+  --muted-foreground: oklch(0.66 0.08 190);
+  --accent: oklch(0.35 0.09 220);
+  --accent-foreground: oklch(0.94 0.05 185);
+  /* Cyan tactique — surbrillance gaming */
+  --neon: oklch(0.82 0.14 195);
   /* Orange de Secours Fluorescent #FF5F1F */
   --destructive: oklch(0.702 0.211 41.5);
   --destructive-foreground: oklch(0.16 0 0);
   --alert: oklch(0.702 0.211 41.5);
   --alert-foreground: oklch(0.16 0 0);
-  --grid-line: oklch(0.42 0.075 230 / 35%);
-  --border: oklch(0.42 0.075 230 / 55%);
-  --input: oklch(0.42 0.075 230 / 45%);
-  --ring: oklch(0.55 0.09 230);
+  --grid-line: oklch(0.48 0.12 230 / 30%);
+  --border: oklch(0.48 0.12 230 / 60%);
+  --input: oklch(0.48 0.12 230 / 50%);
+  --ring: oklch(0.7 0.14 220);
   --font-mono-tac: "Share Tech Mono", "JetBrains Mono", ui-monospace, monospace;
-  --shadow-hud: 0 0 24px oklch(0.42 0.075 230 / 25%);
-  --shadow-alert: 0 0 28px oklch(0.702 0.211 41.5 / 45%);
+  --shadow-hud:
+    0 0 24px oklch(0.48 0.12 230 / 30%),
+    inset 0 0 18px oklch(0.48 0.12 230 / 10%);
+  --shadow-alert: 0 0 28px oklch(0.702 0.211 41.5 / 55%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
