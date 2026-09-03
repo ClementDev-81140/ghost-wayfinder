@@ -107,7 +107,7 @@ function JuryPage() {
                     />
                   </td>
                   <td className="text-glow">{total}</td>
-                  <td className="text-muted-foreground">{gradeFor(total)?.nom ?? "-"}</td>
+                  <td className="text-muted-foreground">{gradeFor(total)?.name ?? "-"}</td>
                   <td>
                     {t.bivouac ? (
                       <img src={t.bivouac} alt={`Bivouac ${t.name}`} className="h-10 w-14 object-cover" />
@@ -207,7 +207,7 @@ function Diploma({ team, onBack }: { team: Team; onBack: () => void }) {
             <p className="text-[9px] tracking-[0.2em] text-muted-foreground">POINTS / 100</p>
           </div>
           <div>
-            <p className="text-lg tracking-[0.15em]">{grade?.nom ?? "NON CLASSE"}</p>
+            <p className="text-lg tracking-[0.15em]">{grade?.name ?? "NON CLASSE"}</p>
             <p className="text-[9px] tracking-[0.2em] text-muted-foreground">GRADE ATTRIBUE</p>
           </div>
         </div>
