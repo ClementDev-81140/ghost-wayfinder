@@ -44,9 +44,11 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-alert: var(--alert);
   --color-alert-foreground: var(--alert-foreground);
+  --color-neon: var(--neon);
   --font-mono: var(--font-mono-tac);
   --shadow-hud: var(--shadow-hud);
   --shadow-alert: var(--shadow-alert);
+  --shadow-neon: 0 0 18px oklch(0.82 0.14 195 / 40%);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -212,15 +214,31 @@
 @utility hud-panel {
   position: relative;
   border: 1px solid var(--border);
-  background-color: oklch(0.2 0.006 118 / 82%);
+  background-color: oklch(0.2 0.02 235 / 85%);
   box-shadow: var(--shadow-hud);
   backdrop-filter: blur(2px);
   background-image: linear-gradient(
     180deg,
-    oklch(0.55 0.09 230 / 8%) 0%,
-    transparent 35%,
-    transparent 100%
+    oklch(0.7 0.12 220 / 10%) 0%,
+    transparent 30%,
+    transparent 78%,
+    oklch(0.82 0.14 195 / 5%) 100%
   );
+}
+
+.hud-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.82 0.14 195 / 70%),
+    transparent
+  );
+  pointer-events: none;
 }
 
 @utility hud-label {
@@ -228,6 +246,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted-foreground);
+  text-shadow: 0 0 6px oklch(0.82 0.14 195 / 30%);
 }
 
 /* ---- Couche gaming / arcade tactique ---- */
