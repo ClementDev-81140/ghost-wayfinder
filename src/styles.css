@@ -356,14 +356,89 @@
 }
 
 @utility text-glow {
-  text-shadow: 0 0 8px oklch(0.7 0.12 230 / 55%);
+  text-shadow:
+    0 0 8px oklch(0.82 0.14 195 / 60%),
+    0 0 22px oklch(0.7 0.13 220 / 30%);
 }
 
 @utility text-glow-alert {
-  text-shadow: 0 0 10px oklch(0.702 0.211 41.5 / 70%);
+  text-shadow:
+    0 0 10px oklch(0.702 0.211 41.5 / 75%),
+    0 0 26px oklch(0.702 0.211 41.5 / 40%);
+}
+
+/* Micro-scintillement façon terminal de jeu */
+@keyframes tac-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.6; }
+  94% { opacity: 1; }
+  97% { opacity: 0.8; }
+}
+
+@utility tac-flicker {
+  animation: tac-flicker 6s linear infinite;
+}
+
+/* Barre de progression façon XP */
+@utility xp-track {
+  position: relative;
+  height: 8px;
+  background: oklch(0.24 0.05 230 / 80%);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+@utility xp-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    oklch(0.48 0.12 230),
+    oklch(0.82 0.14 195)
+  );
+  box-shadow: 0 0 12px oklch(0.82 0.14 195 / 60%);
+}
+
+/* Bouton neon arcade */
+@utility btn-neon {
+  border: 1px solid oklch(0.82 0.14 195 / 70%);
+  color: oklch(0.92 0.06 195);
+  text-shadow: 0 0 8px oklch(0.82 0.14 195 / 50%);
+  box-shadow:
+    0 0 12px oklch(0.82 0.14 195 / 25%),
+    inset 0 0 8px oklch(0.82 0.14 195 / 12%);
+}
+
+.btn-neon:hover {
+  box-shadow:
+    0 0 22px oklch(0.82 0.14 195 / 55%),
+    inset 0 0 14px oklch(0.82 0.14 195 / 25%);
+  background-color: oklch(0.82 0.14 195 / 12%);
 }
 
 @layer base {
+  ::selection {
+    background-color: oklch(0.82 0.14 195 / 35%);
+    color: oklch(0.98 0.02 195);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.16 0.012 235);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.48 0.12 230 / 60%);
+    border: 2px solid oklch(0.16 0.012 235);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.82 0.14 195 / 70%);
+  }
+
   button,
   a {
     transition:
