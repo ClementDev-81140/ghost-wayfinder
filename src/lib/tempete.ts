@@ -218,5 +218,7 @@ export function formatCoord(value: number, axis: "lat" | "lon") {
   return `${hemi} ${String(deg).padStart(2, "0")}${String.fromCharCode(176)}${String(min).padStart(2, "0")}'${sec.padStart(4, "0")}"`;
 }
 
-/** Base camp: Vaour, Foret de Gresigne */
+/** QG reel : village de Vaour (Tarn), lisiere est de la Foret de Gresigne */
 export const QG = { lat: 44.0532, lon: 1.7724 };
+/** Position du QG sur la carte normalisee */
+export const QG_XY = latLonToXY(QG.lat, QG.lon);
