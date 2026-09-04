@@ -57,8 +57,11 @@ export type SectorKind = "QUETE" | "PNJ" | "CACHE" | "ARBRE" | "FAUNE";
 
 export type Sector = {
   code: string;
-  x: number; // 0..1 normalized position on the map
+  lat: number;
+  lon: number;
+  x: number; // 0..1 normalized position on the map (derive du WGS84)
   y: number;
+  place: string;
   enigma: string;
   points: number;
   kind: SectorKind;
