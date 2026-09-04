@@ -76,56 +76,65 @@ export const KIND_LABEL: Record<SectorKind, string> = {
   FAUNE: "SPOT FAUNE",
 };
 
-export const SECTORS: Sector[] = [
+type RawSector = Omit<Sector, "x" | "y">;
+
+/** Points d'interet cales sur des lieux reels du massif de la Gresigne (Tarn) */
+const RAW_SECTORS: RawSector[] = [
   {
     code: "GR-01",
-    x: 0.5,
-    y: 0.5,
+    lat: 44.0555,
+    lon: 1.7295,
+    place: "Coeur du massif, carrefour forestier entre Penne et Vaour",
     enigma: "Carcasse VULCAIN-X",
     points: 40,
     kind: "QUETE",
-    brief: "Extraire la boite noire et le container medical du drone ICARE-868 pres du Dolmen de Peyrelevade.",
+    brief: "Extraire la boite noire et le container medical du drone ICARE-868 au coeur de la foret domaniale.",
   },
   {
     code: "GR-02",
-    x: 0.34,
-    y: 0.42,
+    lat: 44.0619,
+    lon: 1.6906,
+    place: "Larroque, versant ouest de la Gresigne",
     enigma: "Cache du Charbonnier",
     points: 25,
     kind: "CACHE",
-    brief: "Fragment de cle LoRa dissimule dans une ancienne charbonniere.",
+    brief: "Fragment de cle LoRa dissimule dans une ancienne charbonniere au-dessus de Larroque.",
   },
   {
     code: "GR-03",
-    x: 0.66,
-    y: 0.58,
-    enigma: "Ruines de Saint-Amans",
+    lat: 44.0664,
+    lon: 1.7375,
+    place: "Chateau de Penne, eperon rocheux de l'Aveyron",
+    enigma: "Ruines de Penne",
     points: 25,
     kind: "QUETE",
-    brief: "Balise radio de l'Ordre a coupler pour reconstituer la cle de decodage.",
+    brief: "Balise radio de l'Ordre a coupler sous les ruines du chateau pour reconstituer la cle de decodage.",
   },
   {
     code: "GR-04",
-    x: 0.62,
-    y: 0.33,
-    enigma: "Source des Corbieres",
+    lat: 44.0975,
+    lon: 1.6997,
+    place: "Puycelsi, bastide nord-ouest du massif",
+    enigma: "Remparts de Puycelsi",
     points: 20,
     kind: "PNJ",
     brief: "Zone de derive du randonneur egare (fenetre 14H00 - 16H00). Bilan vital, PLS, hydratation.",
   },
   {
     code: "GR-05",
-    x: 0.24,
-    y: 0.68,
+    lat: 44.0301,
+    lon: 1.7108,
+    place: "Bois du sud de la Gresigne, au-dessus de la vallee de la Vere",
     enigma: "Chene des Serments",
     points: 15,
     kind: "ARBRE",
-    brief: "Chene rouvre millenaire : cavite support d'antenne, releve du marquage de l'Ordre.",
+    brief: "Chene rouvre remarquable : cavite support d'antenne, releve du marquage de l'Ordre.",
   },
   {
     code: "GR-06",
-    x: 0.79,
-    y: 0.24,
+    lat: 44.0805,
+    lon: 1.7602,
+    place: "Plateau nord-est, route forestiere de Vaour",
     enigma: "Coulee des Cervides",
     points: 15,
     kind: "FAUNE",
@@ -133,8 +142,9 @@ export const SECTORS: Sector[] = [
   },
   {
     code: "GR-07",
-    x: 0.16,
-    y: 0.22,
+    lat: 44.055,
+    lon: 1.6633,
+    place: "Bruniquel, gorges de l'Aveyron",
     enigma: "Fosse aux Loups",
     points: 10,
     kind: "FAUNE",
@@ -142,8 +152,9 @@ export const SECTORS: Sector[] = [
   },
   {
     code: "GR-08",
-    x: 0.84,
-    y: 0.79,
+    lat: 44.0125,
+    lon: 1.7511,
+    place: "Castelnau-de-Montmiral, verrou de la vallee de la Vere",
     enigma: "Verrou de la Vere",
     points: 10,
     kind: "CACHE",
@@ -151,8 +162,7 @@ export const SECTORS: Sector[] = [
   },
 ];
 
-/** Emprise cartographique simulee : 100 unites carte = 6 km de terrain */
-export const MAP_SPAN_M = 6000;
+export const SECTORS: Sector[] = RAW_SECTORS.map((s) => ({ ...s, ...latLonToXY(s.lat, s.lon) }));
 
 export function bearingTo(from: { x: number; y: number }, to: { x: number; y: number }) {
   const dx = to.x - from.x;
