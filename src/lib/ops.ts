@@ -100,7 +100,7 @@ const DEFAULT: OpsState = {
 /* Store                                                               */
 /* ------------------------------------------------------------------ */
 
-const KEY = "gresigne-ops-v1";
+const KEY = "gresigne-ops-v2";
 let state: OpsState = DEFAULT;
 let loaded = false;
 const listeners = new Set<() => void>();
