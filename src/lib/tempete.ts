@@ -1,10 +1,56 @@
 export type PhaseId = 0 | 1 | 2 | 3;
 
+/* ------------------------------------------------------------------ */
+/* Referentiel geographique reel : Foret Domaniale de Gresigne (Tarn)  */
+/* ------------------------------------------------------------------ */
+
+/** Emprise cartographique reelle du massif (WGS84) */
+export const BOUNDS = {
+  south: 43.99,
+  north: 44.12,
+  west: 1.64,
+  east: 1.82,
+} as const;
+
+/** Centre du massif, entre Penne et Vaour */
+export const CENTER = {
+  lat: (BOUNDS.south + BOUNDS.north) / 2,
+  lon: (BOUNDS.west + BOUNDS.east) / 2,
+};
+
+const M_PER_DEG_LAT = 110574;
+const M_PER_DEG_LON = 111320 * Math.cos((CENTER.lat * Math.PI) / 180);
+
+/** Largeur/hauteur reelle de l'emprise, en metres (~14,4 km) */
+export const MAP_SPAN_M = Math.round((BOUNDS.east - BOUNDS.west) * M_PER_DEG_LON);
+export const MAP_SPAN_M_NS = Math.round((BOUNDS.north - BOUNDS.south) * M_PER_DEG_LAT);
+/** Demi-emprise : reference des rayons de la Tempete */
+const HALF_SPAN_M = MAP_SPAN_M / 2;
+
+/** WGS84 -> position normalisee 0..1 sur la carte */
+export function latLonToXY(lat: number, lon: number) {
+  return {
+    x: (lon - BOUNDS.west) / (BOUNDS.east - BOUNDS.west),
+    y: (BOUNDS.north - lat) / (BOUNDS.north - BOUNDS.south),
+  };
+}
+
+/** Position normalisee -> WGS84 */
+export function xyToLatLon(p: { x: number; y: number }) {
+  return {
+    lat: BOUNDS.north - p.y * (BOUNDS.north - BOUNDS.south),
+    lon: BOUNDS.west + p.x * (BOUNDS.east - BOUNDS.west),
+  };
+}
+
+/** Rayons reels des 4 anneaux de la Tempete, en metres */
+export const PHASE_RADIUS_M = [7000, 5000, 3200, 1800] as const;
+
 export const PHASES = [
-  { id: 0, label: "PHASE 01", window: "00H00 - 06H00", radius: 1 },
-  { id: 1, label: "PHASE 02", window: "06H00 - 12H00", radius: 0.78 },
-  { id: 2, label: "PHASE 03", window: "12H00 - 18H00", radius: 0.56 },
-  { id: 3, label: "PHASE 04", window: "18H00 - 24H00", radius: 0.34 },
+  { id: 0, label: "PHASE 01", window: "00H00 - 06H00", radiusM: PHASE_RADIUS_M[0], radius: PHASE_RADIUS_M[0] / HALF_SPAN_M },
+  { id: 1, label: "PHASE 02", window: "06H00 - 12H00", radiusM: PHASE_RADIUS_M[1], radius: PHASE_RADIUS_M[1] / HALF_SPAN_M },
+  { id: 2, label: "PHASE 03", window: "12H00 - 18H00", radiusM: PHASE_RADIUS_M[2], radius: PHASE_RADIUS_M[2] / HALF_SPAN_M },
+  { id: 3, label: "PHASE 04", window: "18H00 - 24H00", radiusM: PHASE_RADIUS_M[3], radius: PHASE_RADIUS_M[3] / HALF_SPAN_M },
 ] as const;
 
 export type SectorKind = "QUETE" | "PNJ" | "CACHE" | "ARBRE" | "FAUNE";
