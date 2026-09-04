@@ -18,6 +18,7 @@ import {
   bearingTo,
   distanceMeters,
   QG,
+  xyToLatLon,
   distanceFromCenter,
   formatClock,
   formatCoord,
@@ -96,10 +97,7 @@ function Index() {
   // Echantillonnage GPS intermittent : la position ne bouge qu'au cycle 30s
   useEffect(() => {
     if (gpsIn !== 30 || sos) return;
-    setPos({
-      lat: QG.lat + (player.y - 0.5) * -0.06,
-      lon: QG.lon + (player.x - 0.5) * 0.08,
-    });
+    setPos(xyToLatLon(player));
   }, [gpsIn, player, sos]);
 
   // Penalite hors-zone : -5 pts apres 5 minutes consecutives

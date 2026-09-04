@@ -1,18 +1,67 @@
 export type PhaseId = 0 | 1 | 2 | 3;
 
+/* ------------------------------------------------------------------ */
+/* Referentiel geographique reel : Foret Domaniale de Gresigne (Tarn)  */
+/* ------------------------------------------------------------------ */
+
+/** Emprise cartographique reelle du massif (WGS84) */
+export const BOUNDS = {
+  south: 43.99,
+  north: 44.12,
+  west: 1.64,
+  east: 1.82,
+} as const;
+
+/** Centre du massif, entre Penne et Vaour */
+export const CENTER = {
+  lat: (BOUNDS.south + BOUNDS.north) / 2,
+  lon: (BOUNDS.west + BOUNDS.east) / 2,
+};
+
+const M_PER_DEG_LAT = 110574;
+const M_PER_DEG_LON = 111320 * Math.cos((CENTER.lat * Math.PI) / 180);
+
+/** Largeur/hauteur reelle de l'emprise, en metres (~14,4 km) */
+export const MAP_SPAN_M = Math.round((BOUNDS.east - BOUNDS.west) * M_PER_DEG_LON);
+export const MAP_SPAN_M_NS = Math.round((BOUNDS.north - BOUNDS.south) * M_PER_DEG_LAT);
+/** Demi-emprise : reference des rayons de la Tempete */
+const HALF_SPAN_M = MAP_SPAN_M / 2;
+
+/** WGS84 -> position normalisee 0..1 sur la carte */
+export function latLonToXY(lat: number, lon: number) {
+  return {
+    x: (lon - BOUNDS.west) / (BOUNDS.east - BOUNDS.west),
+    y: (BOUNDS.north - lat) / (BOUNDS.north - BOUNDS.south),
+  };
+}
+
+/** Position normalisee -> WGS84 */
+export function xyToLatLon(p: { x: number; y: number }) {
+  return {
+    lat: BOUNDS.north - p.y * (BOUNDS.north - BOUNDS.south),
+    lon: BOUNDS.west + p.x * (BOUNDS.east - BOUNDS.west),
+  };
+}
+
+/** Rayons reels des 4 anneaux de la Tempete, en metres */
+export const PHASE_RADIUS_M = [7000, 5000, 3200, 1800] as const;
+
 export const PHASES = [
-  { id: 0, label: "PHASE 01", window: "00H00 - 06H00", radius: 1 },
-  { id: 1, label: "PHASE 02", window: "06H00 - 12H00", radius: 0.78 },
-  { id: 2, label: "PHASE 03", window: "12H00 - 18H00", radius: 0.56 },
-  { id: 3, label: "PHASE 04", window: "18H00 - 24H00", radius: 0.34 },
+  { id: 0, label: "PHASE 01", window: "00H00 - 06H00", radiusM: PHASE_RADIUS_M[0], radius: PHASE_RADIUS_M[0] / HALF_SPAN_M },
+  { id: 1, label: "PHASE 02", window: "06H00 - 12H00", radiusM: PHASE_RADIUS_M[1], radius: PHASE_RADIUS_M[1] / HALF_SPAN_M },
+  { id: 2, label: "PHASE 03", window: "12H00 - 18H00", radiusM: PHASE_RADIUS_M[2], radius: PHASE_RADIUS_M[2] / HALF_SPAN_M },
+  { id: 3, label: "PHASE 04", window: "18H00 - 24H00", radiusM: PHASE_RADIUS_M[3], radius: PHASE_RADIUS_M[3] / HALF_SPAN_M },
 ] as const;
 
 export type SectorKind = "QUETE" | "PNJ" | "CACHE" | "ARBRE" | "FAUNE";
 
 export type Sector = {
   code: string;
-  x: number; // 0..1 normalized position on the map
+  lat: number;
+  lon: number;
+  x: number; // 0..1 normalized position on the map (derive du WGS84)
   y: number;
+  place: string;
   enigma: string;
   points: number;
   kind: SectorKind;
@@ -27,56 +76,65 @@ export const KIND_LABEL: Record<SectorKind, string> = {
   FAUNE: "SPOT FAUNE",
 };
 
-export const SECTORS: Sector[] = [
+type RawSector = Omit<Sector, "x" | "y">;
+
+/** Points d'interet cales sur des lieux reels du massif de la Gresigne (Tarn) */
+const RAW_SECTORS: RawSector[] = [
   {
     code: "GR-01",
-    x: 0.5,
-    y: 0.5,
+    lat: 44.0555,
+    lon: 1.7295,
+    place: "Coeur du massif, carrefour forestier entre Penne et Vaour",
     enigma: "Carcasse VULCAIN-X",
     points: 40,
     kind: "QUETE",
-    brief: "Extraire la boite noire et le container medical du drone ICARE-868 pres du Dolmen de Peyrelevade.",
+    brief: "Extraire la boite noire et le container medical du drone ICARE-868 au coeur de la foret domaniale.",
   },
   {
     code: "GR-02",
-    x: 0.34,
-    y: 0.42,
+    lat: 44.0619,
+    lon: 1.6906,
+    place: "Larroque, versant ouest de la Gresigne",
     enigma: "Cache du Charbonnier",
     points: 25,
     kind: "CACHE",
-    brief: "Fragment de cle LoRa dissimule dans une ancienne charbonniere.",
+    brief: "Fragment de cle LoRa dissimule dans une ancienne charbonniere au-dessus de Larroque.",
   },
   {
     code: "GR-03",
-    x: 0.66,
-    y: 0.58,
-    enigma: "Ruines de Saint-Amans",
+    lat: 44.0664,
+    lon: 1.7375,
+    place: "Chateau de Penne, eperon rocheux de l'Aveyron",
+    enigma: "Ruines de Penne",
     points: 25,
     kind: "QUETE",
-    brief: "Balise radio de l'Ordre a coupler pour reconstituer la cle de decodage.",
+    brief: "Balise radio de l'Ordre a coupler sous les ruines du chateau pour reconstituer la cle de decodage.",
   },
   {
     code: "GR-04",
-    x: 0.62,
-    y: 0.33,
-    enigma: "Source des Corbieres",
+    lat: 44.0975,
+    lon: 1.6997,
+    place: "Puycelsi, bastide nord-ouest du massif",
+    enigma: "Remparts de Puycelsi",
     points: 20,
     kind: "PNJ",
     brief: "Zone de derive du randonneur egare (fenetre 14H00 - 16H00). Bilan vital, PLS, hydratation.",
   },
   {
     code: "GR-05",
-    x: 0.24,
-    y: 0.68,
+    lat: 44.0301,
+    lon: 1.7108,
+    place: "Bois du sud de la Gresigne, au-dessus de la vallee de la Vere",
     enigma: "Chene des Serments",
     points: 15,
     kind: "ARBRE",
-    brief: "Chene rouvre millenaire : cavite support d'antenne, releve du marquage de l'Ordre.",
+    brief: "Chene rouvre remarquable : cavite support d'antenne, releve du marquage de l'Ordre.",
   },
   {
     code: "GR-06",
-    x: 0.79,
-    y: 0.24,
+    lat: 44.0805,
+    lon: 1.7602,
+    place: "Plateau nord-est, route forestiere de Vaour",
     enigma: "Coulee des Cervides",
     points: 15,
     kind: "FAUNE",
@@ -84,8 +142,9 @@ export const SECTORS: Sector[] = [
   },
   {
     code: "GR-07",
-    x: 0.16,
-    y: 0.22,
+    lat: 44.055,
+    lon: 1.6633,
+    place: "Bruniquel, gorges de l'Aveyron",
     enigma: "Fosse aux Loups",
     points: 10,
     kind: "FAUNE",
@@ -93,8 +152,9 @@ export const SECTORS: Sector[] = [
   },
   {
     code: "GR-08",
-    x: 0.84,
-    y: 0.79,
+    lat: 44.0125,
+    lon: 1.7511,
+    place: "Castelnau-de-Montmiral, verrou de la vallee de la Vere",
     enigma: "Verrou de la Vere",
     points: 10,
     kind: "CACHE",
@@ -102,17 +162,19 @@ export const SECTORS: Sector[] = [
   },
 ];
 
-/** Emprise cartographique simulee : 100 unites carte = 6 km de terrain */
-export const MAP_SPAN_M = 6000;
+export const SECTORS: Sector[] = RAW_SECTORS.map((s) => ({ ...s, ...latLonToXY(s.lat, s.lon) }));
 
 export function bearingTo(from: { x: number; y: number }, to: { x: number; y: number }) {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
+  const dx = (to.x - from.x) * MAP_SPAN_M;
+  const dy = (to.y - from.y) * MAP_SPAN_M_NS;
   return (Math.atan2(dx, -dy) * (180 / Math.PI) + 360) % 360;
 }
 
+/** Distance terrain reelle entre deux positions carte, en metres */
 export function distanceMeters(from: { x: number; y: number }, to: { x: number; y: number }) {
-  return Math.round(Math.hypot(to.x - from.x, to.y - from.y) * MAP_SPAN_M);
+  const dx = (to.x - from.x) * MAP_SPAN_M;
+  const dy = (to.y - from.y) * MAP_SPAN_M_NS;
+  return Math.round(Math.hypot(dx, dy));
 }
 
 export function phaseForHour(hour: number): PhaseId {
@@ -121,6 +183,11 @@ export function phaseForHour(hour: number): PhaseId {
 
 export function distanceFromCenter(s: { x: number; y: number }) {
   return Math.hypot(s.x - 0.5, s.y - 0.5) * 2;
+}
+
+/** Distance reelle au centre de la Tempete (Grand Ecart de la Gresigne), en metres */
+export function distanceFromCenterMeters(s: { x: number; y: number }) {
+  return distanceMeters({ x: 0.5, y: 0.5 }, s);
 }
 
 export function isSectorActive(s: { x: number; y: number }, phase: PhaseId) {
@@ -151,5 +218,7 @@ export function formatCoord(value: number, axis: "lat" | "lon") {
   return `${hemi} ${String(deg).padStart(2, "0")}${String.fromCharCode(176)}${String(min).padStart(2, "0")}'${sec.padStart(4, "0")}"`;
 }
 
-/** Base camp: Vaour, Foret de Gresigne */
+/** QG reel : village de Vaour (Tarn), lisiere est de la Foret de Gresigne */
 export const QG = { lat: 44.0532, lon: 1.7724 };
+/** Position du QG sur la carte normalisee */
+export const QG_XY = latLonToXY(QG.lat, QG.lon);

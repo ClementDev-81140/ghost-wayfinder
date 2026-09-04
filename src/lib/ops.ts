@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-import { QG } from "@/lib/tempete";
+import { latLonToXY, xyToLatLon } from "@/lib/tempete";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -10,6 +10,9 @@ export type Balise = {
   id: string;
   code: string;
   label: string;
+  /** coordonnees reelles WGS84 dans la Foret de Gresigne */
+  lat: number;
+  lon: number;
   x: number;
   y: number;
   points: number;
@@ -60,14 +63,22 @@ export type OpsState = {
 /* Donnees par defaut                                                  */
 /* ------------------------------------------------------------------ */
 
-export const DEFAULT_BALISES: Balise[] = [
-  { id: "b1", code: "BAL-01", label: "Carcasse VULCAIN-X", x: 0.5, y: 0.5, points: 15, validated: false },
-  { id: "b2", code: "BAL-02", label: "Cache du Charbonnier", x: 0.33, y: 0.4, points: 10, validated: false },
-  { id: "b3", code: "BAL-03", label: "Ruines Saint-Amans", x: 0.68, y: 0.6, points: 12, validated: false },
-  { id: "b4", code: "BAL-04", label: "Source des Corbieres", x: 0.6, y: 0.28, points: 8, validated: false },
-  { id: "b5", code: "BAL-05", label: "Chene des Serments", x: 0.22, y: 0.7, points: 8, validated: false },
-  { id: "b6", code: "BAL-06", label: "Verrou de la Vere", x: 0.84, y: 0.8, points: 12, validated: false },
+const RAW_BALISES: Array<Omit<Balise, "x" | "y" | "validated">> = [
+  { id: "b1", code: "BAL-01", label: "Carcasse VULCAIN-X (coeur du massif)", lat: 44.0555, lon: 1.7295, points: 15 },
+  { id: "b2", code: "BAL-02", label: "Cache du Charbonnier (Larroque)", lat: 44.0619, lon: 1.6906, points: 10 },
+  { id: "b3", code: "BAL-03", label: "Ruines du Chateau de Penne", lat: 44.0664, lon: 1.7375, points: 12 },
+  { id: "b4", code: "BAL-04", label: "Remparts de Puycelsi", lat: 44.0975, lon: 1.6997, points: 8 },
+  { id: "b5", code: "BAL-05", label: "Chene des Serments (sud Gresigne)", lat: 44.0301, lon: 1.7108, points: 8 },
+  { id: "b6", code: "BAL-06", label: "Verrou de la Vere (Castelnau-de-Montmiral)", lat: 44.0125, lon: 1.7511, points: 12 },
+  { id: "b7", code: "BAL-07", label: "Gorges de l'Aveyron (Bruniquel)", lat: 44.055, lon: 1.6633, points: 10 },
+  { id: "b8", code: "BAL-08", label: "QG de Vaour (point d'exfiltration)", lat: 44.0532, lon: 1.7724, points: 5 },
 ];
+
+export const DEFAULT_BALISES: Balise[] = RAW_BALISES.map((b) => ({
+  ...b,
+  ...latLonToXY(b.lat, b.lon),
+  validated: false,
+}));
 
 function team(id: string, name: string, terminal: string): Team {
   return { id, name, terminal, initialized: false, score: 0, penalties: 0, bivouac: null, fixes: [] };
@@ -89,7 +100,7 @@ const DEFAULT: OpsState = {
 /* Store                                                               */
 /* ------------------------------------------------------------------ */
 
-const KEY = "gresigne-ops-v1";
+const KEY = "gresigne-ops-v2";
 let state: OpsState = DEFAULT;
 let loaded = false;
 const listeners = new Set<() => void>();
@@ -202,9 +213,9 @@ export function resetOps() {
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-/** Convertit une position carte normalisee en coordonnees WGS84 simulees */
+/** Convertit une position carte normalisee en coordonnees WGS84 reelles (emprise Gresigne) */
 export function toLatLon(p: { x: number; y: number }) {
-  return { lat: QG.lat + (0.5 - p.y) * 0.05, lon: QG.lon + (p.x - 0.5) * 0.07 };
+  return xyToLatLon(p);
 }
 
 export function isCurfew(date: Date) {

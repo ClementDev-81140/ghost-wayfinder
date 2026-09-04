@@ -155,7 +155,7 @@ export function TacticalMap({ phase, player, outOfZone, selected, onSelect }: Pr
         <span className="hud-label">OFFLINE</span>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-between p-2">
-        <span className="hud-label">ZONE ACTIVE {Math.round(radius * 100)}%</span>
+        <span className="hud-label">ZONE ACTIVE {(PHASES[phase].radiusM / 1000).toFixed(1)} KM</span>
         <span className="hud-label text-destructive">TOUCHER UN CARRE = CAP</span>
       </div>
     </div>
