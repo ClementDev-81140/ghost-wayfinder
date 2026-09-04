@@ -19,10 +19,10 @@ export function HudNav() {
             key={l.to}
             to={l.to}
             activeOptions={{ exact: true }}
-            className="hud-corners border border-border bg-secondary/20 py-2 text-center text-[10px] tracking-[0.12em] text-muted-foreground hover:border-ring hover:bg-primary/15 hover:text-foreground"
+            className="hud-corners border border-border bg-secondary/20 py-2 text-center text-[10px] tracking-[0.12em] text-muted-foreground hover:border-neon/70 hover:bg-primary/15 hover:text-neon hover:text-glow"
             activeProps={{
               className:
-                "hud-corners border border-primary bg-primary/25 py-2 text-center text-[10px] tracking-[0.12em] text-foreground shadow-hud text-glow",
+                "hud-corners btn-neon bg-primary/20 py-2 text-center text-[10px] tracking-[0.12em] text-glow tac-flicker",
             }}
           >
             {l.label}

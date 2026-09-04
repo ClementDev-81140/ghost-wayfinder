@@ -157,6 +157,15 @@
     border-color: var(--color-border);
   }
 
+  h1,
+  h2,
+  h3 {
+    text-shadow:
+      0 0 10px oklch(0.82 0.14 195 / 45%),
+      0 0 30px oklch(0.7 0.13 220 / 22%);
+    letter-spacing: 0.08em;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
