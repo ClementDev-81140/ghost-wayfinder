@@ -165,13 +165,16 @@ const RAW_SECTORS: RawSector[] = [
 export const SECTORS: Sector[] = RAW_SECTORS.map((s) => ({ ...s, ...latLonToXY(s.lat, s.lon) }));
 
 export function bearingTo(from: { x: number; y: number }, to: { x: number; y: number }) {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
+  const dx = (to.x - from.x) * MAP_SPAN_M;
+  const dy = (to.y - from.y) * MAP_SPAN_M_NS;
   return (Math.atan2(dx, -dy) * (180 / Math.PI) + 360) % 360;
 }
 
+/** Distance terrain reelle entre deux positions carte, en metres */
 export function distanceMeters(from: { x: number; y: number }, to: { x: number; y: number }) {
-  return Math.round(Math.hypot(to.x - from.x, to.y - from.y) * MAP_SPAN_M);
+  const dx = (to.x - from.x) * MAP_SPAN_M;
+  const dy = (to.y - from.y) * MAP_SPAN_M_NS;
+  return Math.round(Math.hypot(dx, dy));
 }
 
 export function phaseForHour(hour: number): PhaseId {
@@ -180,6 +183,11 @@ export function phaseForHour(hour: number): PhaseId {
 
 export function distanceFromCenter(s: { x: number; y: number }) {
   return Math.hypot(s.x - 0.5, s.y - 0.5) * 2;
+}
+
+/** Distance reelle au centre de la Tempete (Grand Ecart de la Gresigne), en metres */
+export function distanceFromCenterMeters(s: { x: number; y: number }) {
+  return distanceMeters({ x: 0.5, y: 0.5 }, s);
 }
 
 export function isSectorActive(s: { x: number; y: number }, phase: PhaseId) {
