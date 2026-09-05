@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 const LINKS = [
   { to: "/admin", label: "QG", exact: true },
   { to: "/admin/supervision", label: "SUPERVISION", exact: false },
+  { to: "/admin/missions", label: "MISSIONS", exact: false },
   { to: "/admin/run", label: "RUN TERRAIN", exact: false },
   { to: "/admin/jury", label: "JURY", exact: false },
 ] as const;
@@ -10,7 +11,7 @@ const LINKS = [
 export function AdminNav() {
   return (
     <nav className="py-2">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
         {LINKS.map((l) => (
           <Link
             key={l.to}

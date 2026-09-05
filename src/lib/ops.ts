@@ -40,6 +40,20 @@ export type Downlink = {
 
 export type GpsFix = { at: number; lat: number; lon: number; battery: number };
 
+export type MissionType = "PRINCIPALE" | "SECONDAIRE";
+
+export type Mission = {
+  id: string;
+  code: string;
+  title: string;
+  type: MissionType;
+  lat: number;
+  lon: number;
+  points: number;
+  brief: string;
+  active: boolean;
+};
+
 export type Team = {
   id: string;
   name: string;
@@ -56,6 +70,7 @@ export type OpsState = {
   events: OpsEvent[];
   downlinks: Downlink[];
   balises: Balise[];
+  missions: Mission[];
   run: { started: boolean; startedAt: number | null; curfew: boolean };
 };
 
@@ -80,6 +95,75 @@ export const DEFAULT_BALISES: Balise[] = RAW_BALISES.map((b) => ({
   validated: false,
 }));
 
+export const DEFAULT_MISSIONS: Mission[] = [
+  {
+    id: "m1",
+    code: "ICARE-868",
+    title: "Carcasse VULCAIN-X",
+    type: "PRINCIPALE",
+    lat: 44.0555,
+    lon: 1.7295,
+    points: 40,
+    brief: "Extraire la boite noire et le container medical du drone au coeur du massif.",
+    active: true,
+  },
+  {
+    id: "m2",
+    code: "MAQUIS-06",
+    title: "Cache des Maquisards",
+    type: "PRINCIPALE",
+    lat: 44.0619,
+    lon: 1.6906,
+    points: 6,
+    brief: "Conteneur etanche de 1944 dissimule sur le versant ouest.",
+    active: true,
+  },
+  {
+    id: "m3",
+    code: "RELAIS-06",
+    title: "Relais de la Canopee",
+    type: "PRINCIPALE",
+    lat: 44.0664,
+    lon: 1.7375,
+    points: 6,
+    brief: "Reconstituer le signal 868 MHz depuis l'ancien mat de guet.",
+    active: true,
+  },
+  {
+    id: "m4",
+    code: "PNJ-14H",
+    title: "Alerte Randonneur",
+    type: "SECONDAIRE",
+    lat: 44.0975,
+    lon: 1.6997,
+    points: 15,
+    brief: "Fenetre 14H00 - 16H00 : bilan vital, PLS, identification de la plante toxique.",
+    active: true,
+  },
+  {
+    id: "m5",
+    code: "PIERRE-07",
+    title: "Memoire des Pierres",
+    type: "SECONDAIRE",
+    lat: 44.0301,
+    lon: 1.7108,
+    points: 7,
+    brief: "Dolmen de Peyrelevade : gravures sous eclairage rasant, releve des anomalies magnetiques.",
+    active: true,
+  },
+  {
+    id: "m6",
+    code: "HERBA-06",
+    title: "Herbarium de l'Ordre",
+    type: "SECONDAIRE",
+    lat: 44.0805,
+    lon: 1.7602,
+    points: 6,
+    brief: "Identifier et cartographier trois especes officinales.",
+    active: true,
+  },
+];
+
 function team(id: string, name: string, terminal: string): Team {
   return { id, name, terminal, initialized: false, score: 0, penalties: 0, bivouac: null, fixes: [] };
 }
@@ -93,6 +177,7 @@ const DEFAULT: OpsState = {
   events: [],
   downlinks: [],
   balises: DEFAULT_BALISES,
+  missions: DEFAULT_MISSIONS,
   run: { started: false, startedAt: null, curfew: false },
 };
 
@@ -100,7 +185,7 @@ const DEFAULT: OpsState = {
 /* Store                                                               */
 /* ------------------------------------------------------------------ */
 
-const KEY = "gresigne-ops-v2";
+const KEY = "gresigne-ops-v3";
 let state: OpsState = DEFAULT;
 let loaded = false;
 const listeners = new Set<() => void>();
@@ -183,6 +268,26 @@ export function toggleBalise(id: string) {
 export function resetBalises() {
   load();
   commit({ ...state, balises: state.balises.map((b) => ({ ...b, validated: false })) });
+}
+
+export function addMission(m: Omit<Mission, "id">) {
+  load();
+  commit({ ...state, missions: [...state.missions, { ...m, id: uid() }] });
+}
+
+export function updateMission(id: string, patch: Partial<Mission>) {
+  load();
+  commit({ ...state, missions: state.missions.map((m) => (m.id === id ? { ...m, ...patch } : m)) });
+}
+
+export function removeMission(id: string) {
+  load();
+  commit({ ...state, missions: state.missions.filter((m) => m.id !== id) });
+}
+
+export function resetMissions() {
+  load();
+  commit({ ...state, missions: DEFAULT_MISSIONS });
 }
 
 export function scheduleDownlink(d: Omit<Downlink, "id" | "sent">) {
