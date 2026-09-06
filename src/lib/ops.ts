@@ -301,6 +301,69 @@ export function resetMissions() {
   commit({ ...state, missions: DEFAULT_MISSIONS });
 }
 
+/* --- Releves GPS du maitre du jeu --- */
+
+export function importWaypoints(list: Array<Omit<Waypoint, "id">>, mode: "ADD" | "REPLACE" = "ADD") {
+  load();
+  const added = list.map((w) => ({ ...w, id: uid() }));
+  commit({ ...state, waypoints: mode === "REPLACE" ? added : [...(state.waypoints ?? []), ...added] });
+}
+
+export function updateWaypoint(id: string, patch: Partial<Waypoint>) {
+  load();
+  commit({
+    ...state,
+    waypoints: (state.waypoints ?? []).map((w) => (w.id === id ? { ...w, ...patch } : w)),
+  });
+}
+
+export function removeWaypoint(id: string) {
+  load();
+  commit({ ...state, waypoints: (state.waypoints ?? []).filter((w) => w.id !== id) });
+}
+
+export function clearWaypoints() {
+  load();
+  commit({ ...state, waypoints: [] });
+}
+
+/** Remplace les balises de la carte par les releves GPS importes */
+export function applyWaypointsToBalises() {
+  load();
+  const wps = state.waypoints ?? [];
+  if (!wps.length) return;
+  commit({
+    ...state,
+    balises: wps.map((w, i) => ({
+      id: w.id,
+      code: `BAL-${String(i + 1).padStart(2, "0")}`,
+      label: w.name,
+      lat: w.lat,
+      lon: w.lon,
+      ...latLonToXY(w.lat, w.lon),
+      points: 10,
+      validated: false,
+    })),
+  });
+}
+
+/** Cree une mission a partir d'un releve GPS */
+export function waypointToMission(id: string, type: MissionType = "SECONDAIRE") {
+  load();
+  const w = (state.waypoints ?? []).find((x) => x.id === id);
+  if (!w) return;
+  addMission({
+    code: w.name.slice(0, 12).toUpperCase(),
+    title: w.name,
+    type,
+    lat: w.lat,
+    lon: w.lon,
+    points: type === "PRINCIPALE" ? 20 : 10,
+    brief: w.note || "Point releve sur le terrain.",
+    active: true,
+  });
+}
+
 export function scheduleDownlink(d: Omit<Downlink, "id" | "sent">) {
   load();
   commit({ ...state, downlinks: [...state.downlinks, { ...d, id: uid(), sent: false }] });
