@@ -188,6 +188,7 @@ const DEFAULT: OpsState = {
   downlinks: [],
   balises: DEFAULT_BALISES,
   missions: DEFAULT_MISSIONS,
+  waypoints: [],
   run: { started: false, startedAt: null, curfew: false },
 };
 
