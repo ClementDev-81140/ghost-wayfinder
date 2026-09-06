@@ -20,6 +20,7 @@ import { Route as SimulateurRouteImport } from './routes/simulateur'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminJuryRouteImport } from './routes/admin.jury'
 import { Route as AdminMissionsRouteImport } from './routes/admin.missions'
+import { Route as AdminRelevesRouteImport } from './routes/admin.releves'
 import { Route as AdminRunRouteImport } from './routes/admin.run'
 import { Route as AdminSupervisionRouteImport } from './routes/admin.supervision'
 
@@ -78,6 +79,11 @@ const AdminMissionsRoute = AdminMissionsRouteImport.update({
   path: '/missions',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRelevesRoute = AdminRelevesRouteImport.update({
+  id: '/releves',
+  path: '/releves',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRunRoute = AdminRunRouteImport.update({
   id: '/run',
   path: '/run',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/simulateur': typeof SimulateurRoute
   '/admin/jury': typeof AdminJuryRoute
   '/admin/missions': typeof AdminMissionsRoute
+  '/admin/releves': typeof AdminRelevesRoute
   '/admin/run': typeof AdminRunRoute
   '/admin/supervision': typeof AdminSupervisionRoute
   '/admin/': typeof AdminIndexRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/simulateur': typeof SimulateurRoute
   '/admin/jury': typeof AdminJuryRoute
   '/admin/missions': typeof AdminMissionsRoute
+  '/admin/releves': typeof AdminRelevesRoute
   '/admin/run': typeof AdminRunRoute
   '/admin/supervision': typeof AdminSupervisionRoute
   '/admin': typeof AdminIndexRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/simulateur': typeof SimulateurRoute
   '/admin/jury': typeof AdminJuryRoute
   '/admin/missions': typeof AdminMissionsRoute
+  '/admin/releves': typeof AdminRelevesRoute
   '/admin/run': typeof AdminRunRoute
   '/admin/supervision': typeof AdminSupervisionRoute
   '/admin/': typeof AdminIndexRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/simulateur'
     | '/admin/jury'
     | '/admin/missions'
+    | '/admin/releves'
     | '/admin/run'
     | '/admin/supervision'
     | '/admin/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/simulateur'
     | '/admin/jury'
     | '/admin/missions'
+    | '/admin/releves'
     | '/admin/run'
     | '/admin/supervision'
     | '/admin'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/simulateur'
     | '/admin/jury'
     | '/admin/missions'
+    | '/admin/releves'
     | '/admin/run'
     | '/admin/supervision'
     | '/admin/'
@@ -271,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMissionsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/releves': {
+      id: '/admin/releves'
+      path: '/releves'
+      fullPath: '/admin/releves'
+      preLoaderRoute: typeof AdminRelevesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/run': {
       id: '/admin/run'
       path: '/run'
@@ -291,6 +310,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminJuryRoute: typeof AdminJuryRoute
   AdminMissionsRoute: typeof AdminMissionsRoute
+  AdminRelevesRoute: typeof AdminRelevesRoute
   AdminRunRoute: typeof AdminRunRoute
   AdminSupervisionRoute: typeof AdminSupervisionRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -299,6 +319,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminJuryRoute: AdminJuryRoute,
   AdminMissionsRoute: AdminMissionsRoute,
+  AdminRelevesRoute: AdminRelevesRoute,
   AdminRunRoute: AdminRunRoute,
   AdminSupervisionRoute: AdminSupervisionRoute,
   AdminIndexRoute: AdminIndexRoute,
