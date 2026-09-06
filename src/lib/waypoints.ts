@@ -67,7 +67,7 @@ function parseCsv(text: string): ParsedWaypoint[] {
   const first = lines[0];
   if (!first) return [];
 
-  const sep = first.includes(";") ? ";" : lines[0].includes("\t") ? "\t" : ",";
+  const sep = first.includes(";") ? ";" : first.includes("\t") ? "\t" : ",";
   const header = first.toLowerCase();
   const hasHeader = /lat/.test(header) && /(lon|lng)/.test(header);
 
