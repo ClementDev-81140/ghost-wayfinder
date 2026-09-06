@@ -64,10 +64,11 @@ function parseCsv(text: string): ParsedWaypoint[] {
     .split(/\r?\n/)
     .map((l) => l.trim())
     .filter(Boolean);
-  if (!lines.length) return [];
+  const first = lines[0];
+  if (!first) return [];
 
-  const sep = lines[0].includes(";") ? ";" : lines[0].includes("\t") ? "\t" : ",";
-  const header = lines[0].toLowerCase();
+  const sep = first.includes(";") ? ";" : lines[0].includes("\t") ? "\t" : ",";
+  const header = first.toLowerCase();
   const hasHeader = /lat/.test(header) && /(lon|lng)/.test(header);
 
   let iName = 0;
@@ -76,7 +77,7 @@ function parseCsv(text: string): ParsedWaypoint[] {
   let iNote = 3;
 
   if (hasHeader) {
-    const cols = lines[0].split(sep).map((c) => clean(c).toLowerCase());
+    const cols = first.split(sep).map((c) => clean(c).toLowerCase());
     iLat = cols.findIndex((c) => c.startsWith("lat"));
     iLon = cols.findIndex((c) => c.startsWith("lon") || c.startsWith("lng"));
     iName = cols.findIndex((c) => ["name", "nom", "label", "code", "point"].includes(c));
