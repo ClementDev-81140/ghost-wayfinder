@@ -65,12 +65,22 @@ export type Team = {
   fixes: GpsFix[];
 };
 
+/** Point GPS releve sur le terrain par le maitre du jeu */
+export type Waypoint = {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  note?: string;
+};
+
 export type OpsState = {
   teams: Team[];
   events: OpsEvent[];
   downlinks: Downlink[];
   balises: Balise[];
   missions: Mission[];
+  waypoints: Waypoint[];
   run: { started: boolean; startedAt: number | null; curfew: boolean };
 };
 
