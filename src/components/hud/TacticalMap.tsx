@@ -1,4 +1,5 @@
-import { PHASES, SECTORS, isSectorActive, type PhaseId } from "@/lib/tempete";
+import { PHASES, SECTORS, isSectorActive, latLonToXY, type PhaseId } from "@/lib/tempete";
+import { useOps } from "@/lib/ops";
 
 type Props = {
   phase: PhaseId;
@@ -18,6 +19,7 @@ const KIND_COLOR: Record<string, string> = {
 
 export function TacticalMap({ phase, player, outOfZone, selected, onSelect }: Props) {
   const radius = PHASES[phase].radius;
+  const waypoints = useOps().waypoints ?? [];
 
   return (
     <div className="hud-panel relative aspect-square w-full overflow-hidden">
@@ -131,6 +133,23 @@ export function TacticalMap({ phase, player, outOfZone, selected, onSelect }: Pr
                 className="font-mono"
               >
                 {s.code}
+              </text>
+            </g>
+          );
+        })}
+
+        {waypoints.map((w) => {
+          const p = latLonToXY(w.lat, w.lon);
+          if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) return null;
+          return (
+            <g key={w.id} opacity="0.85">
+              <path
+                d={`M${p.x * 100 - 1.8} ${p.y * 100} h3.6 M${p.x * 100} ${p.y * 100 - 1.8} v3.6`}
+                stroke="currentColor"
+                strokeWidth="0.5"
+              />
+              <text x={p.x * 100 + 2.2} y={p.y * 100 + 1.1} fontSize="2.4" fill="currentColor" className="font-mono">
+                {w.name.slice(0, 12).toUpperCase()}
               </text>
             </g>
           );
