@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { requirePlayer } from "@/lib/auth";
+{ createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { HudNav } from "@/components/hud/HudNav";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/lore";
 
 export const Route = createFileRoute("/lore")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Archives de l'Ordre des Pionniers | The Wild Quest" },

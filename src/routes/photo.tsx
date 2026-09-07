@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { requirePlayer } from "@/lib/auth";
+{ createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { HudNav } from "@/components/hud/HudNav";
@@ -7,6 +8,7 @@ import { addCapture, totalPoints, useScore } from "@/lib/score";
 import { QG, formatCoord } from "@/lib/tempete";
 
 export const Route = createFileRoute("/photo")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Safari Photo - Validation des Quetes | Operation Whiteout" },

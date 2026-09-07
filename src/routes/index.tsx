@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { requirePlayer } from "@/lib/auth";
+{ createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { CompassReticle } from "@/components/hud/CompassReticle";
@@ -28,6 +29,7 @@ import {
 } from "@/lib/tempete";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Operation Whiteout - HUD Tactique Offline" },

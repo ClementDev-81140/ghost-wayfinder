@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { requirePlayer } from "@/lib/auth";
+{ createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { HudNav } from "@/components/hud/HudNav";
@@ -14,6 +15,7 @@ import {
 } from "@/lib/codex";
 
 export const Route = createFileRoute("/codex")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Codex de la Gresigne | Flore, Faune & Protocoles" },
