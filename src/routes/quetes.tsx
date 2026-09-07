@@ -1,5 +1,5 @@
 import { requirePlayer } from "@/lib/auth";
-{ createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { HudNav } from "@/components/hud/HudNav";

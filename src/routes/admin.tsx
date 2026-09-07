@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-{ Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { AdminNav } from "@/components/hud/AdminNav";
 
