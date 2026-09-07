@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import { useSyncExternalStore } from "react";
 
 export type Role = "JOUEUR" | "ADMIN";
@@ -64,16 +65,10 @@ export function useSession(): Profile | null {
 
 /** Redirection à utiliser dans beforeLoad des routes joueur. */
 export function requirePlayer() {
-  if (!session) {
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw new Response(null, { status: 302, headers: { Location: "/connexion" } });
-  }
+  if (!session) throw redirect({ to: "/connexion" });
 }
 
 /** Redirection à utiliser dans beforeLoad des routes admin. */
 export function requireAdmin() {
-  if (!session || session.role !== "ADMIN") {
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw new Response(null, { status: 302, headers: { Location: "/connexion" } });
-  }
+  if (!session || session.role !== "ADMIN") throw redirect({ to: "/connexion" });
 }

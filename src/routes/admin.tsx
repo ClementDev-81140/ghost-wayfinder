@@ -1,8 +1,10 @@
+import { requireAdmin } from "@/lib/auth";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { AdminNav } from "@/components/hud/AdminNav";
 
 export const Route = createFileRoute("/admin")({
+  beforeLoad: () => requireAdmin(),
   component: AdminLayout,
 });
 

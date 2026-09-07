@@ -1,3 +1,4 @@
+import { requirePlayer } from "@/lib/auth";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,6 +24,7 @@ import {
 } from "@/lib/tempete";
 
 export const Route = createFileRoute("/simulateur")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Simulateur Maquis - Parcours Gresigne 24H" },

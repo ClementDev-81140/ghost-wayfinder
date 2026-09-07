@@ -1,3 +1,4 @@
+import { requirePlayer } from "@/lib/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -5,6 +6,7 @@ import { HudNav } from "@/components/hud/HudNav";
 import { QUETES } from "@/lib/quetes";
 
 export const Route = createFileRoute("/quetes")({
+  beforeLoad: () => requirePlayer(),
   head: () => ({
     meta: [
       { title: "Journal de Quetes - ICARE-868 | Operation Whiteout" },
