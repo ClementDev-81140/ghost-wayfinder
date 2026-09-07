@@ -63,6 +63,18 @@ export type Team = {
   penalties: number;
   bivouac: string | null; // dataURL photo
   fixes: GpsFix[];
+  /** membres de la patrouille */
+  members: string[];
+  /** couleur de la patrouille sur les cartes */
+  color: string;
+  /** notes libres du maitre du jeu */
+  notes: string;
+  /** points attribues par objectif d'audit */
+  audit: Record<string, number>;
+  /** nombre d'occurrences par malus */
+  malus: Record<string, number>;
+  /** bonus depollution / coup de coeur */
+  bonus: number;
 };
 
 /** Point GPS releve sur le terrain par le maitre du jeu */
@@ -74,6 +86,55 @@ export type Waypoint = {
   note?: string;
 };
 
+/* --- Parametrage de l'audit final --- */
+
+export type AuditItem = {
+  id: string;
+  label: string;
+  max: number;
+  group: "PRINCIPALE" | "ANNEXE" | "BIVOUAC";
+};
+
+export type AuditMalus = { id: string; label: string; cost: number };
+
+export type AuditConfig = {
+  items: AuditItem[];
+  malus: AuditMalus[];
+  bonusMax: number;
+  totalMax: number;
+  grades: Array<{ id: string; name: string; min: number }>;
+};
+
+export const DEFAULT_AUDIT: AuditConfig = {
+  items: [
+    { id: "icare-1", label: "ICARE-1 Localisation & extraction", max: 20, group: "PRINCIPALE" },
+    { id: "icare-2", label: "ICARE-2 Decodage numerique", max: 20, group: "PRINCIPALE" },
+    { id: "pnj-a", label: "PNJ-A Secourisme randonneur", max: 8, group: "ANNEXE" },
+    { id: "pnj-b", label: "PNJ-B Botanique toxique", max: 7, group: "ANNEXE" },
+    { id: "safari", label: "Safari photo animalier", max: 10, group: "ANNEXE" },
+    { id: "dolmen", label: "PIERRE-07 Memoire des Pierres", max: 7, group: "ANNEXE" },
+    { id: "canopee", label: "RELAIS-06 Relais de la Canopee", max: 6, group: "ANNEXE" },
+    { id: "herbarium", label: "HERBA-06 Herbarium de l'Ordre", max: 6, group: "ANNEXE" },
+    { id: "maquis", label: "MAQUIS-06 Cache des Maquisards", max: 6, group: "ANNEXE" },
+    { id: "bivouac", label: "Bivouac zero trace", max: 10, group: "BIVOUAC" },
+  ],
+  malus: [
+    { id: "indice", label: "Indice demande au QG", cost: 2 },
+    { id: "horszone", label: "Incursion hors-zone (> 5 min)", cost: 5 },
+    { id: "retard", label: "Retard d'extraction (/15 min)", cost: 5 },
+    { id: "couvrefeu", label: "Violation du couvre-feu", cost: 15 },
+    { id: "trace", label: "Critere Zero Trace non respecte", cost: 25 },
+  ],
+  bonusMax: 12,
+  totalMax: 100,
+  grades: [
+    { id: "g1", name: "Pionnier Eclaireur-Sauveteur", min: 85 },
+    { id: "g2", name: "Pionnier Cartographe de Terrain", min: 70 },
+    { id: "g3", name: "Pionnier Sentinelle de Reserve", min: 50 },
+    { id: "g4", name: "Pionnier Apprenti", min: 0 },
+  ],
+};
+
 export type OpsState = {
   teams: Team[];
   events: OpsEvent[];
@@ -81,8 +142,10 @@ export type OpsState = {
   balises: Balise[];
   missions: Mission[];
   waypoints: Waypoint[];
+  audit: AuditConfig;
   run: { started: boolean; startedAt: number | null; curfew: boolean };
 };
+
 
 /* ------------------------------------------------------------------ */
 /* Donnees par defaut                                                  */
