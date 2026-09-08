@@ -237,23 +237,42 @@ export const DEFAULT_MISSIONS: Mission[] = [
   },
 ];
 
-function team(id: string, name: string, terminal: string): Team {
-  return { id, name, terminal, initialized: false, score: 0, penalties: 0, bivouac: null, fixes: [] };
+export const TEAM_COLORS = ["#3FC1FF", "#FF5F1F", "#7CFF6B", "#FFD447", "#C77DFF", "#FF6B9A"];
+
+function team(id: string, name: string, terminal: string, color = TEAM_COLORS[0]!): Team {
+  return {
+    id,
+    name,
+    terminal,
+    initialized: false,
+    score: 0,
+    penalties: 0,
+    bivouac: null,
+    fixes: [],
+    members: [],
+    color,
+    notes: "",
+    audit: {},
+    malus: {},
+    bonus: 0,
+  };
 }
 
 const DEFAULT: OpsState = {
   teams: [
-    team("t1", "PATROUILLE ALPHA", "TB-ESP32-001"),
-    team("t2", "PATROUILLE BRAVO", "TB-ESP32-002"),
-    team("t3", "PATROUILLE CHARLIE", "TB-ESP32-003"),
+    team("t1", "PATROUILLE ALPHA", "TB-ESP32-001", TEAM_COLORS[0]),
+    team("t2", "PATROUILLE BRAVO", "TB-ESP32-002", TEAM_COLORS[1]),
+    team("t3", "PATROUILLE CHARLIE", "TB-ESP32-003", TEAM_COLORS[2]),
   ],
   events: [],
   downlinks: [],
   balises: DEFAULT_BALISES,
   missions: DEFAULT_MISSIONS,
   waypoints: [],
+  audit: DEFAULT_AUDIT,
   run: { started: false, startedAt: null, curfew: false },
 };
+
 
 /* ------------------------------------------------------------------ */
 /* Store                                                               */
