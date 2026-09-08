@@ -283,16 +283,35 @@ let state: OpsState = DEFAULT;
 let loaded = false;
 const listeners = new Set<() => void>();
 
+function normalize(s: OpsState): OpsState {
+  return {
+    ...DEFAULT,
+    ...s,
+    audit: { ...DEFAULT_AUDIT, ...(s.audit ?? {}) },
+    teams: (s.teams ?? []).map((t, i) => ({
+      ...team(t.id, t.name, t.terminal, TEAM_COLORS[i % TEAM_COLORS.length]),
+      ...t,
+      members: t.members ?? [],
+      notes: t.notes ?? "",
+      audit: t.audit ?? {},
+      malus: t.malus ?? {},
+      bonus: t.bonus ?? 0,
+      color: t.color ?? TEAM_COLORS[i % TEAM_COLORS.length]!,
+    })),
+  };
+}
+
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (raw) state = { ...DEFAULT, ...(JSON.parse(raw) as OpsState) };
+    if (raw) state = normalize(JSON.parse(raw) as OpsState);
   } catch {
     state = DEFAULT;
   }
 }
+
 
 function commit(next: OpsState) {
   state = next;
