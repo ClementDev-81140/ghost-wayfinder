@@ -237,23 +237,42 @@ export const DEFAULT_MISSIONS: Mission[] = [
   },
 ];
 
-function team(id: string, name: string, terminal: string): Team {
-  return { id, name, terminal, initialized: false, score: 0, penalties: 0, bivouac: null, fixes: [] };
+export const TEAM_COLORS = ["#3FC1FF", "#FF5F1F", "#7CFF6B", "#FFD447", "#C77DFF", "#FF6B9A"];
+
+function team(id: string, name: string, terminal: string, color = TEAM_COLORS[0]!): Team {
+  return {
+    id,
+    name,
+    terminal,
+    initialized: false,
+    score: 0,
+    penalties: 0,
+    bivouac: null,
+    fixes: [],
+    members: [],
+    color,
+    notes: "",
+    audit: {},
+    malus: {},
+    bonus: 0,
+  };
 }
 
 const DEFAULT: OpsState = {
   teams: [
-    team("t1", "PATROUILLE ALPHA", "TB-ESP32-001"),
-    team("t2", "PATROUILLE BRAVO", "TB-ESP32-002"),
-    team("t3", "PATROUILLE CHARLIE", "TB-ESP32-003"),
+    team("t1", "PATROUILLE ALPHA", "TB-ESP32-001", TEAM_COLORS[0]),
+    team("t2", "PATROUILLE BRAVO", "TB-ESP32-002", TEAM_COLORS[1]),
+    team("t3", "PATROUILLE CHARLIE", "TB-ESP32-003", TEAM_COLORS[2]),
   ],
   events: [],
   downlinks: [],
   balises: DEFAULT_BALISES,
   missions: DEFAULT_MISSIONS,
   waypoints: [],
+  audit: DEFAULT_AUDIT,
   run: { started: false, startedAt: null, curfew: false },
 };
+
 
 /* ------------------------------------------------------------------ */
 /* Store                                                               */
@@ -264,16 +283,35 @@ let state: OpsState = DEFAULT;
 let loaded = false;
 const listeners = new Set<() => void>();
 
+function normalize(s: OpsState): OpsState {
+  return {
+    ...DEFAULT,
+    ...s,
+    audit: { ...DEFAULT_AUDIT, ...(s.audit ?? {}) },
+    teams: (s.teams ?? []).map((t, i) => ({
+      ...team(t.id, t.name, t.terminal, TEAM_COLORS[i % TEAM_COLORS.length]),
+      ...t,
+      members: t.members ?? [],
+      notes: t.notes ?? "",
+      audit: t.audit ?? {},
+      malus: t.malus ?? {},
+      bonus: t.bonus ?? 0,
+      color: t.color ?? TEAM_COLORS[i % TEAM_COLORS.length]!,
+    })),
+  };
+}
+
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (raw) state = { ...DEFAULT, ...(JSON.parse(raw) as OpsState) };
+    if (raw) state = normalize(JSON.parse(raw) as OpsState);
   } catch {
     state = DEFAULT;
   }
 }
+
 
 function commit(next: OpsState) {
   state = next;
@@ -328,8 +366,124 @@ export function updateTeam(teamId: string, patch: Partial<Team>) {
 
 export function addTeam(name: string, terminal: string) {
   load();
-  commit({ ...state, teams: [...state.teams, team(uid(), name, terminal)] });
+  const color = TEAM_COLORS[state.teams.length % TEAM_COLORS.length]!;
+  commit({ ...state, teams: [...state.teams, team(uid(), name, terminal, color)] });
 }
+
+export function removeTeam(teamId: string) {
+  load();
+  commit({ ...state, teams: state.teams.filter((t) => t.id !== teamId) });
+}
+
+export function duplicateTeam(teamId: string) {
+  load();
+  const t = state.teams.find((x) => x.id === teamId);
+  if (!t) return;
+  const color = TEAM_COLORS[state.teams.length % TEAM_COLORS.length]!;
+  commit({
+    ...state,
+    teams: [...state.teams, { ...t, id: uid(), name: `${t.name} BIS`, color, fixes: [], bivouac: null }],
+  });
+}
+
+export function setTeamMembers(teamId: string, members: string[]) {
+  updateTeam(teamId, { members });
+}
+
+/* --- Audit final --- */
+
+export function setAuditScore(teamId: string, itemId: string, value: number) {
+  load();
+  commit({
+    ...state,
+    teams: state.teams.map((t) =>
+      t.id === teamId ? { ...t, audit: { ...t.audit, [itemId]: value } } : t,
+    ),
+  });
+}
+
+export function setTeamMalus(teamId: string, malusId: string, count: number) {
+  load();
+  commit({
+    ...state,
+    teams: state.teams.map((t) =>
+      t.id === teamId ? { ...t, malus: { ...t.malus, [malusId]: Math.max(0, count) } } : t,
+    ),
+  });
+}
+
+export function setAuditConfig(patch: Partial<AuditConfig>) {
+  load();
+  commit({ ...state, audit: { ...state.audit, ...patch } });
+}
+
+export function addAuditItem(item: Omit<AuditItem, "id">) {
+  load();
+  commit({ ...state, audit: { ...state.audit, items: [...state.audit.items, { ...item, id: uid() }] } });
+}
+
+export function updateAuditItem(id: string, patch: Partial<AuditItem>) {
+  load();
+  commit({
+    ...state,
+    audit: { ...state.audit, items: state.audit.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) },
+  });
+}
+
+export function removeAuditItem(id: string) {
+  load();
+  commit({ ...state, audit: { ...state.audit, items: state.audit.items.filter((i) => i.id !== id) } });
+}
+
+export function addAuditMalus(m: Omit<AuditMalus, "id">) {
+  load();
+  commit({ ...state, audit: { ...state.audit, malus: [...state.audit.malus, { ...m, id: uid() }] } });
+}
+
+export function updateAuditMalus(id: string, patch: Partial<AuditMalus>) {
+  load();
+  commit({
+    ...state,
+    audit: { ...state.audit, malus: state.audit.malus.map((m) => (m.id === id ? { ...m, ...patch } : m)) },
+  });
+}
+
+export function removeAuditMalus(id: string) {
+  load();
+  commit({ ...state, audit: { ...state.audit, malus: state.audit.malus.filter((m) => m.id !== id) } });
+}
+
+export function updateGradeThreshold(id: string, min: number, name?: string) {
+  load();
+  commit({
+    ...state,
+    audit: {
+      ...state.audit,
+      grades: state.audit.grades.map((g) => (g.id === id ? { ...g, min, ...(name ? { name } : {}) } : g)),
+    },
+  });
+}
+
+export function resetAuditConfig() {
+  load();
+  commit({ ...state, audit: DEFAULT_AUDIT });
+}
+
+/** Total audite d'une patrouille selon le parametrage courant */
+export function teamTotals(t: Team, cfg: AuditConfig) {
+  const gained = cfg.items.reduce((a, i) => a + Math.min(t.audit[i.id] ?? 0, i.max), 0);
+  const bonus = Math.min(t.bonus ?? 0, cfg.bonusMax);
+  const penalties = cfg.malus.reduce((a, m) => a + (t.malus[m.id] ?? 0) * m.cost, 0);
+  const total = Math.max(0, Math.min(cfg.totalMax, gained + bonus - penalties));
+  return { gained, bonus, penalties, total };
+}
+
+export function gradeForTotal(total: number, cfg: AuditConfig) {
+  return (
+    [...cfg.grades].sort((a, b) => b.min - a.min).find((g) => total >= g.min)?.name ?? "NON CLASSE"
+  );
+}
+
 
 export function toggleBalise(id: string) {
   load();
